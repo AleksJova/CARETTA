@@ -23,7 +23,7 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "clean:all": "npm run clean && rm -rf node_modules/ package-lock.json",
+    "clean": "rm -rf node_modules/ package-lock.json",
     "prepare": "husky"
   },
   "dependencies": {
@@ -46,7 +46,6 @@
     "globals": "^17.6.0",
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
-    "lint-staged": "^17.0.5",
     "prettier": "^3.8.3",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
