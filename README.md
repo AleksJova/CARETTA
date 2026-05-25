@@ -1,73 +1,62 @@
-# React + TypeScript + Vite
+# Caretta
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Appointment management prototype for a medical center.
 
-Currently, two official plugins are available:
+## Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The clinic runs Monday to Saturday with two specialist shifts:
+- **Morning shift**: 8 am to 1 pm (5 slots)
+- **Afternoon shift**: 1 pm to 7 pm (6 slots)
 
-## React Compiler
+**Roles:**
+- **Admins**: manage doctors, mark doctors unavailable for dates, view all appointments, mark appointments completed
+- **Patients**: search available slots, book and cancel appointments, view upcoming appointments
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Front-end prototype with no backend. Architecture and design reasoning are documented in [DESIGN.md](DESIGN.md).
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Build tool**: Vite
+- **Framework**: React 19 + TypeScript
+- **State management**: Zustand (separate domain and auth stores)
+- **Data persistence**: localStorage (behind a data-service interface)
+- **Routing**: React Router
+- **Forms**: React Hook Form
+- **UI**: Tailwind CSS + shadcn/ui
+- **Testing**: Vitest + React Testing Library
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Getting Started
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Requirements
+- Node 18+
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Installation and Development
+
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Open the local URL Vite prints.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Example:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+  ➜  Local:   * http://localhost:5173/ *
+```
+
+## Test
+
+ The testing covers the five required flows: slot generation (count, timing, day coverage), day-off enforcement, booking, cancellation, and filtering. They favor flow-level tests through hooks and components over isolated units.
+
+```bash
+npm run test
+```
+
+## Mock Authentication
+
+There is no real auth backend. On the login screen, select a role:
+- **Admin**: manage doctors and schedules
+- **Patient**: book and manage appointments
+
+The role is stored in the auth store and persisted for the session. See [DESIGN.md](DESIGN.md) for more information.
