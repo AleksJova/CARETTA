@@ -1,5 +1,5 @@
 import type { Appointment, Doctor, Patient } from '../types';
-import type { DataService } from './dataService';
+import type { DataService } from './dataServiceContract';
 
 const KEYS = {
   doctors: 'caretta:doctors',
@@ -9,6 +9,7 @@ const KEYS = {
 
 function read<T>(key: string): T[] {
   try {
+    const raw = localStorage.getItem(key);
     if (!raw) {
       return [];
     }

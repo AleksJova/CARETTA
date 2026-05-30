@@ -18,7 +18,8 @@ export interface Doctor {
 export interface Patient {
   id: string;
   name: string;
-  contact: string;
+  email: string;
+  phone: string;
 }
 
 export interface Appointment {
@@ -37,5 +38,14 @@ export interface Slot {
   date: string; // ISO date string
   startTime: string; // HH:mm
   endTime: string; // HH:mm
-  status: 'available' | 'booked';
+}
+
+// Wraps fallible operations. On success carries `data`, on failure a `reason` message
+export type Result<T = void> =
+  | { ok: true; data?: T }
+  | { ok: false; reason: string };
+
+// A booking attempt is a slot the patient wants to claim, plus their identity
+export interface BookingRequest extends Slot {
+  patientId: string;
 }
