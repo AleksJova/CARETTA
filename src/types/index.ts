@@ -40,9 +40,9 @@ export interface Slot {
   endTime: string; // HH:mm
 }
 
-// Wraps fallible operations. On success carries `data`, on failure a `reason` message
+// Result of an operation. Success has ok: true and optional data; failure has ok: false and reason.
 export type Result<T = void> =
-  | { ok: true; data?: T }
+  | ([T] extends [void] ? { ok: true } : { ok: true; data: T })
   | { ok: false; reason: string };
 
 // A booking attempt is a slot the patient wants to claim, plus their identity
