@@ -1,5 +1,1 @@
-export {
-  validateBooking,
-  type BookingRequest,
-  type ValidationResult,
-} from './validateBooking/validateBooking';
+export { validateBooking } from './validateBooking/validateBooking';

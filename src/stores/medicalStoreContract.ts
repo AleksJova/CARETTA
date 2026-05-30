@@ -1,4 +1,4 @@
-import { type BookingRequest } from '@/utils';
+import { type BookingRequest } from '@/types';
 import type { Appointment, Doctor, Patient, Result } from '@/types';
 
 export interface MedicalStore {
