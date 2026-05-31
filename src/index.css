@@ -25,6 +25,13 @@
     --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
 
+    /* Muted page surface #F8FAFC — sits behind white cards/header */
+    --surface-muted: 210 40% 98%;
+
+    /* Soft-teal accent for role/status pills: bg #E1F5EE on text #0F6E56 */
+    --accent-teal: 158 50% 92%;
+    --accent-teal-foreground: 165 76% 25%;
+
     --card: 0 0% 100%;
     --card-foreground: 222.2 47.4% 11.2%;
 

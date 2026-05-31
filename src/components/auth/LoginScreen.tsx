@@ -1,18 +1,22 @@
+import { ShieldHalf, User } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import type { Role } from '@/types';
 import { useAuthStore } from '@/stores/authStore/authStore';
 import { Button } from '@/components/ui/button';
 import TurtlePond from '@/components/shared/TurtlePondBg';
-import carettaLogo from '@/assets/carettaLogo.svg';
+import Logo from '@/components/shared/Logo';
 
 function RoleButton({
   role,
   label,
   variant,
+  icon: Icon,
   onChoose,
 }: {
   role: Role;
   label: string;
   variant: 'default' | 'outline';
+  icon: LucideIcon;
   onChoose: (role: Role) => void;
 }) {
   return (
@@ -22,6 +26,7 @@ function RoleButton({
       className="w-full"
       onClick={() => onChoose(role)}
     >
+      <Icon aria-hidden="true" />
       {label}
     </Button>
   );
@@ -34,17 +39,11 @@ export default function LoginScreen() {
   const loginAs = useAuthStore((s) => s.loginAs);
 
   return (
-    <div className="h-svh w-full select-none">
+    <main className="h-svh w-full select-none">
       <TurtlePond turtleCount={5}>
-        <div className="w-[340px] max-w-[90vw] rounded-2xl border border-white/70 bg-white/65 p-8 backdrop-blur-md">
+        <div className="w-[320px] max-w-[90vw] rounded-2xl border border-white/70 bg-white/65 p-6 backdrop-blur-md sm:p-8">
           <div className="mb-6 flex flex-col items-center text-center">
-            <img
-              src={carettaLogo}
-              width={56}
-              height={56}
-              alt=""
-              className="mb-3"
-            />
+            <Logo className="mb-3" />
             <h1 className="text-xl font-medium tracking-tight text-foreground">
               Caretta
             </h1>
@@ -53,26 +52,50 @@ export default function LoginScreen() {
             </p>
           </div>
 
-          <p className="mb-3 text-center text-xs text-muted-foreground">
+          <p
+            id="role-prompt"
+            className="mb-3 text-center text-xs text-muted-foreground"
+          >
             Choose a role to continue
           </p>
 
-          <div className="flex flex-col gap-2.5">
+          <div
+            role="group"
+            aria-labelledby="role-prompt"
+            className="flex flex-col gap-2.5"
+          >
             <RoleButton
               role="patient"
               label="Continue as patient"
               variant="default"
+              icon={User}
               onChoose={loginAs}
             />
             <RoleButton
               role="admin"
               label="Continue as admin"
               variant="outline"
+              icon={ShieldHalf}
               onChoose={loginAs}
             />
           </div>
+
+          <div className="my-4 flex items-center gap-2.5">
+            <span className="h-px flex-1 bg-primary/20" />
+            <span className="text-[11px] text-muted-foreground">
+              mock authentication
+            </span>
+            <span className="h-px flex-1 bg-primary/20" />
+          </div>
+          <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+            Demo only — no password required.
+          </p>
         </div>
+
+        <p className="pointer-events-none absolute inset-x-0 bottom-2.5 text-center text-[11px] text-primary/50">
+          move your cursor — the turtles are shy
+        </p>
       </TurtlePond>
-    </div>
+    </main>
   );
 }

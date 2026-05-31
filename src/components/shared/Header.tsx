@@ -1,48 +1,56 @@
 import type { ReactNode } from 'react';
-import { LogOut } from 'lucide-react';
+import { LogOut, User, ShieldHalf } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore/authStore';
 import { Button } from '@/components/ui/button';
-import TurtlePond from '@/components/shared/TurtlePondBg';
-import carettaLogo from '@/assets/carettaLogo.svg';
+import Logo from '@/components/shared/Logo';
 
 export default function Header({
-  title,
+  roleLabel,
   children,
 }: {
-  title: string;
+  roleLabel: string;
   children?: ReactNode;
 }) {
   const logout = useAuthStore((s) => s.logout);
+  const role = useAuthStore((s) => s.role);
 
   return (
-    <header className="relative">
-      <TurtlePond
-        interactive={false}
-        ripples={false}
-        turtleCount={2}
-        style={{ height: 96 }}
-      >
-        <div className="flex h-14 w-full max-w-6xl items-center justify-between rounded-2xl border border-white/70 bg-white/45 px-6 shadow-sm backdrop-blur-md mx-4">
-          <div className="flex items-center gap-3">
-            <img src={carettaLogo} width={32} height={32} alt="" />
-            <span className="text-lg font-medium tracking-tight text-foreground">
-              {title}
+    <header className="border-b border-border bg-white">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
+        <div className="flex items-center gap-2.5">
+          <Logo size="sm" />
+          <span className="text-lg font-medium tracking-tight text-primary">
+            Caretta
+          </span>
+        </div>
+        <div className="flex items-center gap-2 sm:gap-3">
+          {children}
+          <div className="flex items-center gap-2">
+            <span
+              className={`flex size-7 items-center justify-center rounded-full ${
+                role === 'patient'
+                  ? 'bg-accent-teal text-accent-teal-foreground'
+                  : 'bg-pending/15 text-pending'
+              }`}
+            >
+              {role === 'patient' && (
+                <User className="size-4" aria-hidden="true" />
+              )}
+
+              {role === 'admin' && (
+                <ShieldHalf className="size-4" aria-hidden="true" />
+              )}
+            </span>
+            <span className="hidden text-sm text-foreground sm:inline">
+              {roleLabel}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            {children}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={logout}
-              className="bg-white/70"
-            >
-              <LogOut />
-              Log out
-            </Button>
-          </div>
+          <Button variant="outline" size="sm" onClick={logout}>
+            <LogOut />
+            <span className="hidden sm:inline">Log out</span>
+          </Button>
         </div>
-      </TurtlePond>
+      </div>
     </header>
   );
 }
