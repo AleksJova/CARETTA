@@ -31,7 +31,7 @@ Front-end prototype with no backend. Architecture and design reasoning are docum
 
 ### Requirements
 
-- Node 18+
+- Node 20+
 
 ### Installation and Development
 
