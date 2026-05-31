@@ -1,4 +1,4 @@
-import type { Appointment, Doctor, Patient } from '../types';
+import type { Appointment, Doctor, Patient } from '../../types';
 
 export interface DataService {
   getDoctors(): Doctor[];
