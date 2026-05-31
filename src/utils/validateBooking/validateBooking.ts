@@ -3,7 +3,7 @@ import {
   SHIFT_HOURS,
   SLOT_DURATION_HOURS,
   UTC_DAY_TO_WEEKDAY,
-} from '@/constants/shifts';
+} from '@/constants';
 
 // Parses a "HH:mm" string into whole hours, returning null unless it is exactly on
 // the hour (mm === "00"). The slot grid is hourly, so any minutes make it off-grid.

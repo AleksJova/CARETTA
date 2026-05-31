@@ -1,23 +1,41 @@
-import carettaLogo from './assets/carettaLogo.svg';
-import { Button } from '@/components/ui/button';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useRole } from '@/stores/authStore/authStore';
+import { HOME_PATH } from '@/routes';
+import LoginScreen from '@/components/auth/LoginScreen';
+import RequireRole from '@/components/shared/RequireRole';
+import PatientLayout from '@/components/patient/PatientLayout';
+import AdminLayout from '@/components/admin/AdminLayout';
 
-function App() {
-  return (
-    <main className="flex min-h-svh items-center justify-center bg-background text-foreground">
-      <section className="flex flex-col items-center gap-6 px-5 py-8">
-        <img src={carettaLogo} width={200} alt="Caretta Logo" />
-
-        <div className="flex flex-col items-center gap-2">
-          <h2 className="text-2xl font-medium text-foreground">Get started</h2>
-          <p className="text-muted-foreground">
-            Appointment care, with a soft shell
-          </p>
-        </div>
-
-        <Button>Caretta primary</Button>
-      </section>
-    </main>
-  );
+/**
+ * Index ("/"): the login screen when signed out,
+ * otherwise bounce to the chosen signed-in role's home.
+ */
+function Index() {
+  const role = useRole();
+  if (role) return <Navigate to={HOME_PATH[role]} replace />;
+  return <LoginScreen />;
 }
 
-export default App;
+/**
+ * App shell + routing. Role gating is enforced by RequireRole on each branch:
+ * a patient who navigates to /admin is redirected to /patient, and vice versa.
+ */
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Index />} />
+
+        <Route element={<RequireRole allow="patient" />}>
+          <Route path="/patient" element={<PatientLayout />} />
+        </Route>
+
+        <Route element={<RequireRole allow="admin" />}>
+          <Route path="/admin" element={<AdminLayout />} />
+        </Route>
+
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
