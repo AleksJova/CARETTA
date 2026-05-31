@@ -21,3 +21,19 @@ These are the architectural and design decisions behind the prototype and the re
 
 6. One product improvement you would propose
    If you were presenting this to the product team after delivering the prototype, what would you suggest adding or changing, and why?
+
+## Security: client-side role gating
+
+The role a user picks on login is stored client-side and used only to decide which
+view to render. The router guard (RequireRole) stops a patient from seeing the admin
+view and an admin from seeing the patient view, and logout clears the role and returns
+to login. This is a user-experience affordance, not a security boundary. Anyone can edit
+local storage or call the data layer directly, so the client side cannot be trusted to keep a
+patient out of admin data.
+
+Real enforcement belongs on the server, checked on every request against an authenticated
+session rather than a value the browser holds. The server would verify identity, confirm
+the role is allowed to perform the action, and scope every query to the data that role may
+see, returning the same answer no matter what the client renders. The client guard and the
+server check are layered: the guard makes the wrong view unreachable in normal client side use, and the
+server makes it unreachable in fact.
