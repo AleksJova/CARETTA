@@ -15,6 +15,11 @@ export default {
         ring: 'hsl(var(--ring))',
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
+        'surface-muted': 'hsl(var(--surface-muted))',
+        'accent-teal': {
+          DEFAULT: 'hsl(var(--accent-teal))',
+          foreground: 'hsl(var(--accent-teal-foreground))',
+        },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
           foreground: 'hsl(var(--primary-foreground))',
