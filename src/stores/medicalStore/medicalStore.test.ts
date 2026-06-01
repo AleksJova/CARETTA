@@ -44,6 +44,7 @@ describe('Store shape — exposes expected state slices and action methods', () 
     const s = useMedicalStore.getState();
     expect(typeof s.addDoctor).toBe('function');
     expect(typeof s.updateDoctor).toBe('function');
+    expect(typeof s.removeDoctor).toBe('function');
     expect(typeof s.setDoctorDayOff).toBe('function');
     expect(typeof s.removeDoctorDayOff).toBe('function');
     expect(typeof s.addPatient).toBe('function');
@@ -179,6 +180,89 @@ describe('Doctor actions — adding, updating, and managing days off', () => {
       useMedicalStore.getState().removeDoctorDayOff(DOCTOR.id, '2026-06-10')
     );
     expect(useMedicalStore.getState().doctors[0].daysOff).toHaveLength(0);
+  });
+
+  it('setDoctorDayOff succeeds when no appointment falls on the date', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR] });
+    let ok = false;
+    act(() => {
+      ok = useMedicalStore
+        .getState()
+        .setDoctorDayOff(DOCTOR.id, '2026-06-10').ok;
+    });
+    expect(ok).toBe(true);
+    expect(useMedicalStore.getState().doctors[0].daysOff).toContain(
+      '2026-06-10'
+    );
+  });
+
+  it('setDoctorDayOff refuses a date with a non-cancelled appointment', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
+    act(() => {
+      useMedicalStore.getState().bookAppointment(BASE_INPUT);
+    });
+    let ok = true;
+    act(() => {
+      ok = useMedicalStore
+        .getState()
+        .setDoctorDayOff(DOCTOR.id, BASE_INPUT.date).ok;
+    });
+    expect(ok).toBe(false);
+    expect(useMedicalStore.getState().doctors[0].daysOff).toHaveLength(0);
+  });
+
+  it('setDoctorDayOff allows a date whose only appointment is cancelled', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
+    act(() => {
+      useMedicalStore.getState().bookAppointment(BASE_INPUT);
+    });
+    const id = useMedicalStore.getState().appointments[0].id;
+    act(() => useMedicalStore.getState().cancelAppointment(id));
+    let ok = false;
+    act(() => {
+      ok = useMedicalStore
+        .getState()
+        .setDoctorDayOff(DOCTOR.id, BASE_INPUT.date).ok;
+    });
+    expect(ok).toBe(true);
+  });
+
+  it('removeDoctor deletes a doctor with no active appointments', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR], appointments: [] });
+    let ok = false;
+    act(() => {
+      ok = useMedicalStore.getState().removeDoctor(DOCTOR.id).ok;
+    });
+    expect(ok).toBe(true);
+    expect(useMedicalStore.getState().doctors).toHaveLength(0);
+  });
+
+  it('removeDoctor refuses when the doctor has a confirmed appointment', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
+    act(() => {
+      useMedicalStore.getState().bookAppointment(BASE_INPUT);
+    });
+    let ok = true;
+    act(() => {
+      ok = useMedicalStore.getState().removeDoctor(DOCTOR.id).ok;
+    });
+    expect(ok).toBe(false);
+    expect(useMedicalStore.getState().doctors).toHaveLength(1);
+  });
+
+  it('removeDoctor allows deletion when the only appointment is cancelled', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
+    act(() => {
+      useMedicalStore.getState().bookAppointment(BASE_INPUT);
+    });
+    const id = useMedicalStore.getState().appointments[0].id;
+    act(() => useMedicalStore.getState().cancelAppointment(id));
+    let ok = false;
+    act(() => {
+      ok = useMedicalStore.getState().removeDoctor(DOCTOR.id).ok;
+    });
+    expect(ok).toBe(true);
+    expect(useMedicalStore.getState().doctors).toHaveLength(0);
   });
 });
 

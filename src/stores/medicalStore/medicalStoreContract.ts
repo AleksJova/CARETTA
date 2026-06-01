@@ -9,7 +9,8 @@ export interface MedicalStore {
   // Doctor actions
   addDoctor: (doctor: Doctor) => void;
   updateDoctor: (id: string, patch: Partial<Omit<Doctor, 'id'>>) => void;
-  setDoctorDayOff: (doctorId: string, isoDate: string) => void;
+  removeDoctor: (id: string) => Result;
+  setDoctorDayOff: (doctorId: string, isoDate: string) => Result;
   removeDoctorDayOff: (doctorId: string, isoDate: string) => void;
 
   // Patient actions

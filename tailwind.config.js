@@ -73,6 +73,16 @@ export default {
         completed: 'hsl(var(--status-completed))',
         cancelled: 'hsl(var(--status-cancelled))',
         pending: 'hsl(var(--status-pending))',
+        'shift-morning': {
+          DEFAULT: 'hsl(var(--shift-morning))',
+          foreground: 'hsl(var(--shift-morning-foreground))',
+          surface: 'hsl(var(--shift-morning-surface))',
+        },
+        'shift-afternoon': {
+          DEFAULT: 'hsl(var(--shift-afternoon))',
+          foreground: 'hsl(var(--shift-afternoon-foreground))',
+          surface: 'hsl(var(--shift-afternoon-surface))',
+        },
       },
     },
   },

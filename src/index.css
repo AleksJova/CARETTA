@@ -64,7 +64,24 @@
     --status-cancelled: 0 72% 51%;
     --status-pending: 38 92% 50%;
 
+    /* Shift badges — soft-bg + label, never colour alone.
+       Morning = amber (reuses the pending hue family), Afternoon = info-blue #185FA5. */
+    --shift-morning: 38 92% 50%;
+    --shift-morning-foreground: 33 88% 21%; /* #633806 */
+    --shift-morning-surface: 38 73% 92%; /* #FAEEDA */
+    --shift-afternoon: 209 74% 37%; /* #185FA5 */
+    --shift-afternoon-foreground: 209 82% 27%; /* #0C447C */
+    --shift-afternoon-surface: 209 71% 94%; /* #E6F1FB */
+
     --radius: 0.5rem;
+  }
+}
+
+@layer components {
+  /* Shared text-input style for hand-written form fields (the modals), matching
+     the shadcn control look: hairline border, 8px radius, teal focus ring. */
+  .form-input {
+    @apply h-9 w-full rounded-lg border border-input bg-white px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring;
   }
 }
 

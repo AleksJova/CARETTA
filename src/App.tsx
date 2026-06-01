@@ -5,6 +5,8 @@ import LoginScreen from '@/components/auth/LoginScreen';
 import RequireRole from '@/components/shared/RequireRole';
 import PatientLayout from '@/components/patient/PatientLayout';
 import AdminLayout from '@/components/admin/AdminLayout';
+import DoctorsPage from '@/components/admin/DoctorsPage';
+import AppointmentsPage from '@/components/admin/AppointmentsPage';
 import { Toaster } from '@/components/shared/Toaster';
 
 /**
@@ -32,7 +34,10 @@ export default function App() {
         </Route>
 
         <Route element={<RequireRole allow="admin" />}>
-          <Route path="/admin" element={<AdminLayout />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<DoctorsPage />} />
+            <Route path="appointments" element={<AppointmentsPage />} />
+          </Route>
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

@@ -7,14 +7,30 @@ export const SHIFT_HOURS: Record<Shift, { start: number; end: number }> = {
 
 export const SLOT_DURATION_HOURS = 1;
 
-// Maps Date.getUTCDay() values to clinic weekdays.
-// Sunday is null because the clinic is closed.
-export const UTC_DAY_TO_WEEKDAY: readonly (Weekday | null)[] = [
-  null,
+// The clinic's fixed specialties — the doctor form and seed data both use these.
+export const SPECIALTIES = [
+  'Cardiology',
+  'Dermatology',
+  'Neurology',
+  'Pulmonology',
+] as const;
+
+export type Specialty = (typeof SPECIALTIES)[number];
+
+// Clinic working days, Mon–Sat (no Sunday). Order matters: used for the
+// working-days picker and for compact range rendering.
+export const WEEKDAYS: readonly Weekday[] = [
   'Mon',
   'Tue',
   'Wed',
   'Thu',
   'Fri',
   'Sat',
+] as const;
+
+// Maps Date.getUTCDay() values to clinic weekdays.
+// Sunday is null because the clinic is closed.
+export const UTC_DAY_TO_WEEKDAY: readonly (Weekday | null)[] = [
+  null,
+  ...WEEKDAYS,
 ] as const;

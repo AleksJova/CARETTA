@@ -36,7 +36,48 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
     });
   },
 
+  removeDoctor: (id) => {
+    const { appointments } = get();
+    // Block deletion while the doctor has non-cancelled appointments.
+    const blocking = appointments.filter(
+      (a) => a.doctorId === id && a.status !== 'cancelled'
+    );
+    if (blocking.length > 0) {
+      return {
+        ok: false,
+        reason: `This doctor has ${blocking.length} active appointment${
+          blocking.length === 1 ? '' : 's'
+        }. Cancel or complete them before deleting.`,
+      };
+    }
+
+    set((s) => {
+      const next = s.doctors.filter((d) => d.id !== id);
+      dataService.saveDoctors(next);
+      return { doctors: next };
+    });
+    return { ok: true };
+  },
+
   setDoctorDayOff: (doctorId, isoDate) => {
+    const { appointments } = get();
+    // Refuse a day off that collides with a non-cancelled appointment — marking
+    // it off would strand the patient's booking against the derived-slots model.
+    const conflicts = appointments.filter(
+      (a) =>
+        a.doctorId === doctorId &&
+        a.date === isoDate &&
+        a.status !== 'cancelled'
+    );
+    if (conflicts.length > 0) {
+      return {
+        ok: false,
+        reason: `This doctor has ${conflicts.length} appointment${
+          conflicts.length === 1 ? '' : 's'
+        } on this day. Cancel or reassign them before marking it off.`,
+      };
+    }
+
     set((s) => {
       const next = s.doctors.map((d) => {
         if (d.id !== doctorId) return d;
@@ -46,6 +87,7 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
       dataService.saveDoctors(next);
       return { doctors: next };
     });
+    return { ok: true };
   },
 
   removeDoctorDayOff: (doctorId, isoDate) => {

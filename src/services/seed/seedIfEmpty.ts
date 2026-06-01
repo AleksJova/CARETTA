@@ -1,5 +1,5 @@
 import { dataService } from '@/services/dataService/localStorageService';
-import { SEED_DOCTORS, SEED_PATIENTS } from './seedData';
+import { SEED_DOCTORS, SEED_PATIENTS, buildSeedAppointments } from './seedData';
 
 // Populates the data store with demo data on first run only. It writes seeds
 // solely when a collection is empty, so it never clobbers bookings or doctor
@@ -13,5 +13,8 @@ export function seedIfEmpty(): void {
   }
   if (dataService.getPatients().length === 0) {
     dataService.savePatients(SEED_PATIENTS);
+  }
+  if (dataService.getAppointments().length === 0) {
+    dataService.saveAppointments(buildSeedAppointments());
   }
 }

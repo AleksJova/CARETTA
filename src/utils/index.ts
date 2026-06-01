@@ -23,3 +23,5 @@ export {
   localPlaceLabel,
   formatClockTime,
 } from './localTime/localTime';
+export { formatWorkingDays } from './formatWorkingDays/formatWorkingDays';
+export { weekDaysOff } from './weekDaysOff/weekDaysOff';
