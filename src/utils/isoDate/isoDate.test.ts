@@ -56,6 +56,13 @@ describe('local-time bridge', () => {
   it('returns null for a malformed string', () => {
     expect(isoToLocalDate('2026/06/02')).toBeNull();
   });
+
+  it('returns null for overflow days instead of normalizing them', () => {
+    // new Date() would roll these into a valid later day; we reject them so the
+    // local parser matches isoToDate's ISO-boundary behavior.
+    expect(isoToLocalDate('2026-02-30')).toBeNull(); // -> Mar 2 without the guard
+    expect(isoToLocalDate('2026-13-01')).toBeNull(); // month overflow
+  });
 });
 
 describe('nextOpenDay', () => {

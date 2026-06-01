@@ -40,11 +40,15 @@ export function nextOpenDay(iso: string): string {
 // Convert at the boundary to keep the picked day correct across timezones.
 
 // "2026-06-02" -> Date at *local* midnight on that calendar day.
+// Mirrors isoToDate's round-trip guard: new Date() normalizes overflow days
+// (2026-02-30 -> Mar 2), so reject any input that doesn't serialize back to itself.
 export function isoToLocalDate(iso: string): Date | null {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
   if (!match) return null;
   const [, y, m, d] = match;
-  return new Date(Number(y), Number(m) - 1, Number(d));
+  const date = new Date(Number(y), Number(m) - 1, Number(d));
+  if (localDateToISO(date) !== iso) return null;
+  return date;
 }
 
 // Local Date -> "YYYY-MM-DD" using its *local* calendar day.
