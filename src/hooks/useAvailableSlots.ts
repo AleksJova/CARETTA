@@ -3,7 +3,7 @@ import {
   useDoctors,
   useAppointments,
 } from '@/stores/medicalStore/medicalStore';
-import { availableSlots, getWeekStart } from '@/utils';
+import { availableSlots, getWeekStart, todayISO } from '@/utils';
 import type { SlotFilters } from '@/utils';
 import type { Slot } from '@/types';
 
@@ -20,7 +20,7 @@ export function useAvailableSlots(
   const doctors = useDoctors();
   const appointments = useAppointments();
   const weekStart = getWeekStart(anchorDate);
-  const today = new Date().toISOString().slice(0, 10);
+  const today = todayISO();
 
   const { specialty, doctorId, date } = filters;
 
