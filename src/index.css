@@ -8,17 +8,17 @@
  * apply opacity, e.g. `bg-primary/90`. Mirror any new token in tailwind.config.js
  * under `theme.extend.colors` to expose it as a utility class.
  *
- * Usage examples (utility class → token):
- *   bg-background        → --background       (page surface)
- *   text-foreground      → --foreground       (body text)
- *   bg-primary           → --primary          (brand teal #0F766E)
- *   text-primary-foreground → --primary-foreground (text on teal)
- *   text-muted-foreground → --muted-foreground (secondary text)
- *   border-border        → --border           (0.5px-style hairlines)
- *   ring-ring            → --ring             (focus rings)
+ * Usage examples (utility class -> token):
+ *   bg-background        -> --background       (page surface)
+ *   text-foreground      -> --foreground       (body text)
+ *   bg-primary           -> --primary          (brand teal #0F766E)
+ *   text-primary-foreground -> --primary-foreground (text on teal)
+ *   text-muted-foreground -> --muted-foreground (secondary text)
+ *   border-border        -> --border           (0.5px-style hairlines)
+ *   ring-ring            -> --ring             (focus rings)
  *   bg-confirmed / text-completed / bg-cancelled / text-pending
- *                        → appointment status tokens
- *   rounded-lg           → --radius (8px)
+ *                        -> appointment status tokens
+ *   rounded-lg           -> --radius (8px)
  */
 @layer base {
   :root {
@@ -75,5 +75,12 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  /* disables the animation for users who have prefers-reduced-motion set to reduce */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-flash-highlight {
+      animation: none;
+    }
   }
 }

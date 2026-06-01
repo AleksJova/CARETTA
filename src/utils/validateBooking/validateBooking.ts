@@ -4,6 +4,7 @@ import {
   SLOT_DURATION_HOURS,
   UTC_DAY_TO_WEEKDAY,
 } from '@/constants';
+import { isoToDate } from '@/utils/isoDate/isoDate';
 
 // Parses a "HH:mm" string into whole hours, returning null unless it is exactly on
 // the hour (mm === "00"). The slot grid is hourly, so any minutes make it off-grid.
@@ -48,7 +49,12 @@ export function validateBooking(
     return { ok: false, reason: 'This is not a valid consultation slot.' };
   }
 
-  const weekday = UTC_DAY_TO_WEEKDAY[new Date(request.date).getUTCDay()];
+  const date = isoToDate(request.date);
+  if (!date) {
+    return { ok: false, reason: 'Invalid appointment date.' };
+  }
+
+  const weekday = UTC_DAY_TO_WEEKDAY[date.getUTCDay()];
   if (!weekday || !doctor.workingDays.includes(weekday)) {
     return { ok: false, reason: 'Doctor does not work on this day.' };
   }

@@ -9,6 +9,25 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
+      keyframes: {
+        // "Just changed" cue (a freed slot reappearing, or a new appointment
+        // landing): a clear teal wash + inset teal ring that holds briefly then
+        // eases out. Uses an *inset* box-shadow + background so it stays visible
+        // even inside an overflow-hidden container (an outset ring would clip).
+        'flash-highlight': {
+          '0%, 30%': {
+            boxShadow: 'inset 0 0 0 2px hsl(var(--primary) / 0.6)',
+            backgroundColor: 'hsl(var(--accent-teal))',
+          },
+          '100%': {
+            boxShadow: 'inset 0 0 0 2px hsl(var(--primary) / 0)',
+            backgroundColor: 'transparent',
+          },
+        },
+      },
+      animation: {
+        'flash-highlight': 'flash-highlight 3s ease-out',
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

@@ -5,6 +5,7 @@ import LoginScreen from '@/components/auth/LoginScreen';
 import RequireRole from '@/components/shared/RequireRole';
 import PatientLayout from '@/components/patient/PatientLayout';
 import AdminLayout from '@/components/admin/AdminLayout';
+import { Toaster } from '@/components/shared/Toaster';
 
 /**
  * Index ("/"): the login screen when signed out,
@@ -36,6 +37,7 @@ export default function App() {
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <Toaster />
     </BrowserRouter>
   );
 }
