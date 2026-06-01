@@ -23,6 +23,19 @@ describe('isoToDate / dateToISO round-trip', () => {
   it('returns null for a malformed ISO string', () => {
     expect(isoToDate('nope')).toBeNull();
   });
+
+  it('rejects impossible calendar days instead of normalizing them', () => {
+    // new Date() would overflow these into a valid later day; we reject them.
+    expect(isoToDate('2026-02-30')).toBeNull(); // -> Mar 2 without the guard
+    expect(isoToDate('2026-04-31')).toBeNull(); // -> May 1 without the guard
+    expect(isoToDate('2026-13-01')).toBeNull(); // month overflow
+    expect(isoToDate('2026-00-10')).toBeNull(); // month underflow
+  });
+
+  it('rejects non-padded or wrong-shaped dates', () => {
+    expect(isoToDate('2026-6-1')).toBeNull();
+    expect(isoToDate('2026/06/01')).toBeNull();
+  });
 });
 
 describe('local-time bridge', () => {

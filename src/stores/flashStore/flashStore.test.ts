@@ -31,6 +31,22 @@ describe('flashStore', () => {
     expect(useFlashStore.getState().flashes.has('apt-1')).toBe(false);
   });
 
+  it("a re-flash's timeout is not cut short by the previous flash's timeout", () => {
+    useFlashStore.getState().flash('apt-1');
+    // Re-flash partway through the first duration: the older timeout must not
+    // clear the key when it fires, since a newer flash now owns it.
+    vi.advanceTimersByTime(FLASH_DURATION_MS - 1000);
+    useFlashStore.getState().flash('apt-1');
+
+    // First flash's timeout fires here; the key must survive.
+    vi.advanceTimersByTime(1000);
+    expect(useFlashStore.getState().flashes.has('apt-1')).toBe(true);
+
+    // The full duration from the second flash must still elapse before clearing.
+    vi.advanceTimersByTime(FLASH_DURATION_MS - 1000);
+    expect(useFlashStore.getState().flashes.has('apt-1')).toBe(false);
+  });
+
   it('tracks multiple flashed keys independently', () => {
     useFlashStore.getState().flash('slot-a');
     useFlashStore.getState().flash('apt-b');

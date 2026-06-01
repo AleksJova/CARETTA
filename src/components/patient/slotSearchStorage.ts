@@ -1,10 +1,11 @@
 import { nextOpenDay, todayISO } from '@/utils';
+import { slotSearchService } from '@/services';
 import type { SlotFilterValue } from './SlotFilters';
 
-// Persist the patient's last search filters across refreshes.
-// Clears when the tab closes and on login/logout.
-
-const STORAGE_KEY = 'caretta:patient:slotSearch';
+// Patient-feature shape and rules for the persisted slot search. The raw
+// storage I/O lives behind slotSearchService so non-feature layers (authStore)
+// can clear it without importing this module. Cleared when the tab closes and
+// on login/logout.
 
 export function defaultSearchDate(): string {
   return nextOpenDay(todayISO());
@@ -21,7 +22,7 @@ export function loadSlotSearch(): PersistedSearch {
     applied: null,
   };
   try {
-    const raw = sessionStorage.getItem(STORAGE_KEY);
+    const raw = slotSearchService.read();
     if (!raw) return fallback;
     const parsed = JSON.parse(raw) as PersistedSearch;
     // A persisted date that's now in the past (tab left open overnight) is
@@ -41,17 +42,5 @@ export function loadSlotSearch(): PersistedSearch {
 }
 
 export function saveSlotSearch(value: PersistedSearch): void {
-  try {
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(value));
-  } catch {
-    // Storage full / unavailable — persistence is best-effort, never fatal.
-  }
-}
-
-export function clearSlotSearch(): void {
-  try {
-    sessionStorage.removeItem(STORAGE_KEY);
-  } catch {
-    // Best-effort; nothing to do if storage is unavailable.
-  }
+  slotSearchService.write(JSON.stringify(value));
 }

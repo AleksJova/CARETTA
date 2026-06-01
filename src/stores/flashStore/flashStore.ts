@@ -21,13 +21,17 @@ let nonce = 0;
 export const useFlashStore = create<FlashStore>()((set, get) => ({
   flashes: new Map<string, number>(),
   flash: (key) => {
+    const currentNonce = ++nonce;
     const next = new Map(get().flashes);
-    next.set(key, ++nonce);
+    next.set(key, currentNonce);
     set({ flashes: next });
 
     setTimeout(() => {
+      // Only clear if this is still the active flash for this key
+      if (get().flashes.get(key) !== currentNonce) return;
       const map = new Map(get().flashes);
-      if (map.delete(key)) set({ flashes: map });
+      map.delete(key);
+      set({ flashes: map });
     }, FLASH_DURATION_MS);
   },
 }));

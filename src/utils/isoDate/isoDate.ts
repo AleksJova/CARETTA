@@ -6,9 +6,13 @@ export function isSunday(date: Date): boolean {
 }
 
 // "2026-06-01" -> Date at UTC midnight. Returns null for a malformed string.
+// The round-trip check rejects overflow days: new Date() silently normalizes
+// 2026-02-30 to Mar 2, so we reject any input that doesn't serialize back to itself.
 export function isoToDate(iso: string): Date | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
   const date = new Date(`${iso}T00:00:00Z`);
-  return Number.isNaN(date.getTime()) ? null : date;
+  if (Number.isNaN(date.getTime()) || dateToISO(date) !== iso) return null;
+  return date;
 }
 
 // Date -> "YYYY-MM-DD" using its UTC calendar day.
