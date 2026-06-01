@@ -13,6 +13,8 @@ export {
   isoToDate,
   dateToISO,
   todayISO,
+  nowHHmm,
+  isSlotInPast,
   nextOpenDay,
   isoToLocalDate,
   localDateToISO,
@@ -24,4 +26,7 @@ export {
   formatClockTime,
 } from './localTime/localTime';
 export { formatWorkingDays } from './formatWorkingDays/formatWorkingDays';
-export { weekDaysOff } from './weekDaysOff/weekDaysOff';
+export { weekDaysOff, weekDaysOffList } from './weekDaysOff/weekDaysOff';
+export type { DayOffEntry } from './weekDaysOff/weekDaysOff';
+export { deriveAppointmentView } from './appointmentView/appointmentView';
+export type { AppointmentView } from './appointmentView/appointmentView';

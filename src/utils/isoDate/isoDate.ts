@@ -25,6 +25,28 @@ export function todayISO(): string {
   return localDateToISO(new Date());
 }
 
+// Current local wall-clock time as "HH:mm". Pairs with todayISO() to compare
+// against a slot's (date, startTime) and hide today's already-started slots.
+export function nowHHmm(date = new Date()): string {
+  const h = String(date.getHours()).padStart(2, '0');
+  const m = String(date.getMinutes()).padStart(2, '0');
+  return `${h}:${m}`;
+}
+
+// True if a slot has already started relative to (todayDate, nowTime). A slot is
+// in the past on its own day once its start time is at or before now; earlier
+// days are always past, later days never are.
+export function isSlotInPast(
+  slotDate: string,
+  slotStartTime: string,
+  todayDate: string,
+  nowTime: string
+): boolean {
+  if (slotDate < todayDate) return true;
+  if (slotDate > todayDate) return false;
+  return slotStartTime <= nowTime;
+}
+
 // If iso is a Sunday, return the Monday after; otherwise return iso unchanged.
 export function nextOpenDay(iso: string): string {
   const date = isoToDate(iso);

@@ -4,7 +4,12 @@ import {
   SLOT_DURATION_HOURS,
   UTC_DAY_TO_WEEKDAY,
 } from '@/constants';
-import { isoToDate } from '@/utils/isoDate/isoDate';
+import {
+  isoToDate,
+  isSlotInPast,
+  nowHHmm,
+  todayISO,
+} from '@/utils/isoDate/isoDate';
 
 // Parses a "HH:mm" string into whole hours, returning null unless it is exactly on
 // the hour (mm === "00"). The slot grid is hourly, so any minutes make it off-grid.
@@ -38,7 +43,8 @@ function isOnGrid(doctor: Doctor, request: BookingRequest): boolean {
 export function validateBooking(
   request: BookingRequest,
   doctors: Doctor[],
-  appointments: Appointment[]
+  appointments: Appointment[],
+  now: { today: string; time: string } = { today: todayISO(), time: nowHHmm() }
 ): Result {
   const doctor = doctors.find((d) => d.id === request.doctorId);
   if (!doctor) {
@@ -63,12 +69,15 @@ export function validateBooking(
     return { ok: false, reason: 'Doctor is not available on this date.' };
   }
 
+  if (isSlotInPast(request.date, request.startTime, now.today, now.time)) {
+    return { ok: false, reason: 'This time slot has already passed.' };
+  }
+
   const conflict = appointments.find(
     (a) =>
       a.doctorId === request.doctorId &&
       a.date === request.date &&
-      a.startTime === request.startTime &&
-      a.status !== 'cancelled'
+      a.startTime === request.startTime
   );
   if (conflict) {
     return { ok: false, reason: 'This slot has already been booked.' };

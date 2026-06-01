@@ -3,20 +3,20 @@ import type { AppointmentStatus } from '@/types';
 export interface AppointmentFilterState {
   doctorId?: string;
   status?: AppointmentStatus;
-  date: string;
+  // A specific ISO day, or undefined to show the whole current week.
+  date?: string;
 }
 
 const STORAGE_KEY = 'caretta:admin:appointmentFilters';
 
 const VALID_STATUSES: AppointmentStatus[] = ['confirmed', 'completed'];
 
-// Falls back to `fallbackDate` (today) and drops anything malformed.
-export function readAppointmentFilters(
-  fallbackDate: string
-): AppointmentFilterState {
+// Restores all three filters across a refresh. The date is a specific ISO day
+// or undefined for the whole-week view.
+export function readAppointmentFilters(): AppointmentFilterState {
   try {
     const raw = sessionStorage.getItem(STORAGE_KEY);
-    if (!raw) return { date: fallbackDate };
+    if (!raw) return {};
     const parsed = JSON.parse(raw) as Partial<AppointmentFilterState>;
     return {
       doctorId:
@@ -25,11 +25,11 @@ export function readAppointmentFilters(
         parsed.status && VALID_STATUSES.includes(parsed.status)
           ? parsed.status
           : undefined,
-      date: typeof parsed.date === 'string' ? parsed.date : fallbackDate,
+      date: typeof parsed.date === 'string' ? parsed.date : undefined,
     };
   } catch (error) {
     console.warn('Failed to read appointment filters', error);
-    return { date: fallbackDate };
+    return {};
   }
 }
 

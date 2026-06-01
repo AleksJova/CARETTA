@@ -83,6 +83,10 @@ export default {
           foreground: 'hsl(var(--shift-afternoon-foreground))',
           surface: 'hsl(var(--shift-afternoon-surface))',
         },
+        progress: {
+          foreground: 'hsl(var(--progress-foreground))',
+          surface: 'hsl(var(--progress-surface))',
+        },
       },
     },
   },

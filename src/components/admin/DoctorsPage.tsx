@@ -1,8 +1,8 @@
 import { useCallback, useMemo, useState } from 'react';
-import { Plus } from 'lucide-react';
+import { CalendarOff, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useDoctors } from '@/stores/medicalStore/medicalStore';
-import { todayISO, weekDaysOff } from '@/utils';
+import { formatDate, todayISO, weekDaysOffList } from '@/utils';
 import { DoctorRow } from './DoctorRow';
 import { AddDoctorModal } from './AddDoctorModal';
 import { DayOffModal } from './DayOffModal';
@@ -16,8 +16,8 @@ export default function DoctorsPage() {
   const [editDoctor, setEditDoctor] = useState<Doctor | null>(null);
   const [deleteDoctor, setDeleteDoctor] = useState<Doctor | null>(null);
 
-  const daysOffThisWeek = useMemo(
-    () => weekDaysOff(doctors, todayISO()),
+  const daysOff = useMemo(
+    () => weekDaysOffList(doctors, todayISO()),
     [doctors]
   );
 
@@ -41,8 +41,8 @@ export default function DoctorsPage() {
         </Button>
       </div>
 
-      <div className="mb-5 grid grid-cols-2 gap-3">
-        <div className="rounded-lg bg-white p-4">
+      <div className="mb-5 grid gap-3 sm:grid-cols-[auto_1fr]">
+        <div className="rounded-lg bg-white p-4 sm:min-w-36">
           <p className="text-xs text-muted-foreground">Total doctors</p>
           <p className="mt-1 text-2xl font-medium text-foreground">
             {doctors.length}
@@ -50,11 +50,24 @@ export default function DoctorsPage() {
         </div>
         <div className="rounded-lg bg-white p-4">
           <p className="text-xs text-muted-foreground">
-            Total days off this week
+            Days off this week ({daysOff.length})
           </p>
-          <p className="mt-1 text-2xl font-medium text-foreground">
-            {daysOffThisWeek}
-          </p>
+          {daysOff.length === 0 ? (
+            <p className="mt-2 text-sm text-muted-foreground">
+              No days off scheduled.
+            </p>
+          ) : (
+            <ul className="mt-2 flex flex-wrap gap-1.5">
+              {daysOff.map((entry) => (
+                <li key={`${entry.doctorId}-${entry.date}`}>
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-pending/15 px-2 py-1 text-xs font-medium text-pending">
+                    <CalendarOff className="size-3.5" aria-hidden="true" />
+                    {entry.doctorName} · {formatDate(entry.date)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
 

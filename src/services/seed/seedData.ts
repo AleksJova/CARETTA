@@ -51,27 +51,59 @@ const SEED_OTHER_PATIENTS: Patient[] = [
     email: 'ana@example.com',
     phone: '+1 (555) 0111',
   },
-  {
-    id: 'pat-james',
-    name: 'James Lee',
-    email: 'james@example.com',
-    phone: '+1 (555) 0112',
-  },
-  {
-    id: 'pat-sara',
-    name: 'Sara Okonkwo',
-    email: 'sara@example.com',
-    phone: '+1 (555) 0113',
-  },
-  {
-    id: 'pat-tom',
-    name: 'Tom Fischer',
-    email: 'tom@example.com',
-    phone: '+1 (555) 0114',
-  },
 ];
 
 export const SEED_PATIENTS: Patient[] = [DEMO_PATIENT, ...SEED_OTHER_PATIENTS];
+
+// `dayOffset` is days from the current week's Monday, so the demo always lands
+// in the present week rather than drifting into the past as days pass.
+interface SeedAppointmentSpec extends Omit<Appointment, 'date'> {
+  dayOffset: number;
+}
+
+const SEED_APPOINTMENT_SPECS: SeedAppointmentSpec[] = [
+  {
+    id: 'appt-1',
+    doctorId: 'doc-carter',
+    patientId: 'pat-ana',
+    dayOffset: 0,
+    startTime: '09:00',
+    endTime: '10:00',
+    status: 'confirmed',
+  },
+  {
+    id: 'appt-2',
+    doctorId: 'doc-stefanoska',
+    patientId: 'pat-demo',
+    dayOffset: 0,
+    startTime: '08:00',
+    endTime: '09:00',
+    status: 'completed',
+  },
+  {
+    id: 'appt-3',
+    doctorId: 'doc-fernandez',
+    patientId: 'pat-ana',
+    dayOffset: 0,
+    startTime: '14:00',
+    endTime: '15:00',
+    status: 'confirmed',
+  },
+  {
+    id: 'appt-4',
+    doctorId: 'doc-ruiz',
+    patientId: 'pat-demo',
+    dayOffset: 1,
+    startTime: '15:00',
+    endTime: '16:00',
+    status: 'confirmed',
+  },
+];
+
+// IDs of the demo appointments — used to re-anchor only these, never user data.
+export const SEED_APPOINTMENT_IDS: ReadonlySet<string> = new Set(
+  SEED_APPOINTMENT_SPECS.map((s) => s.id)
+);
 
 function weekdayISO(days: number): string {
   const monday = new Date(`${getWeekStart(todayISO())}T00:00:00Z`);
@@ -80,42 +112,15 @@ function weekdayISO(days: number): string {
 }
 
 export function buildSeedAppointments(): Appointment[] {
-  return [
-    {
-      id: 'appt-1',
-      doctorId: 'doc-carter',
-      patientId: 'pat-ana',
-      date: weekdayISO(0),
-      startTime: '09:00',
-      endTime: '10:00',
-      status: 'confirmed',
-    },
-    {
-      id: 'appt-2',
-      doctorId: 'doc-stefanoska',
-      patientId: 'pat-james',
-      date: weekdayISO(0),
-      startTime: '08:00',
-      endTime: '09:00',
-      status: 'completed',
-    },
-    {
-      id: 'appt-3',
-      doctorId: 'doc-fernandez',
-      patientId: 'pat-sara',
-      date: weekdayISO(0),
-      startTime: '14:00',
-      endTime: '15:00',
-      status: 'cancelled',
-    },
-    {
-      id: 'appt-4',
-      doctorId: 'doc-ruiz',
-      patientId: 'pat-tom',
-      date: weekdayISO(1),
-      startTime: '15:00',
-      endTime: '16:00',
-      status: 'confirmed',
-    },
-  ];
+  return SEED_APPOINTMENT_SPECS.map(({ dayOffset, ...rest }) => ({
+    ...rest,
+    date: weekdayISO(dayOffset),
+  }));
+}
+
+// The current-week date a demo appointment should sit on, or null if the id is
+// not a demo appointment (so callers leave user-created bookings untouched).
+export function seedAppointmentDate(id: string): string | null {
+  const spec = SEED_APPOINTMENT_SPECS.find((s) => s.id === id);
+  return spec ? weekdayISO(spec.dayOffset) : null;
 }

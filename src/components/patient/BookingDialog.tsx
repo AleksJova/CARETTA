@@ -11,8 +11,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { useMedicalStore } from '@/stores/medicalStore/medicalStore';
 import { useFlashStore } from '@/stores/flashStore/flashStore';
+import { usePatientId } from '@/stores/authStore/authStore';
 import { notify } from '@/components/shared/notify';
-import { DEMO_PATIENT } from '@/services';
 import { formatDate, formatTimeRange } from '@/utils';
 import type { Doctor, Slot } from '@/types';
 
@@ -31,6 +31,7 @@ export function BookingDialog({
 }: BookingDialogProps) {
   const bookAppointment = useMedicalStore((s) => s.bookAppointment);
   const flash = useFlashStore((s) => s.flash);
+  const patientId = usePatientId();
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -45,12 +46,12 @@ export function BookingDialog({
   };
 
   const handleConfirm = () => {
-    if (!slot) return;
+    if (!slot || !patientId) return;
     setError(null);
     setSubmitting(true);
     const result = bookAppointment({
       doctorId: slot.doctorId,
-      patientId: DEMO_PATIENT.id,
+      patientId,
       date: slot.date,
       startTime: slot.startTime,
       endTime: slot.endTime,

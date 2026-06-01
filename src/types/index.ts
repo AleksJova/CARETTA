@@ -2,7 +2,7 @@ export type Shift = 'morning' | 'afternoon';
 
 export type Weekday = 'Mon' | 'Tue' | 'Wed' | 'Thu' | 'Fri' | 'Sat';
 
-export type AppointmentStatus = 'confirmed' | 'completed' | 'cancelled';
+export type AppointmentStatus = 'confirmed' | 'completed';
 
 export type Role = 'patient' | 'admin';
 

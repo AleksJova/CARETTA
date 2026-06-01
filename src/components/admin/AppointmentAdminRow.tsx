@@ -3,6 +3,7 @@ import { Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AdminStatusBadge } from './AdminStatusBadge';
 import { formatDate, formatTime12h } from '@/utils';
+import type { AppointmentView } from '@/utils';
 import type { Appointment } from '@/types';
 
 export interface AppointmentRowData {
@@ -10,6 +11,7 @@ export interface AppointmentRowData {
   patientName: string;
   doctorName: string;
   specialty: string;
+  view: AppointmentView;
 }
 
 interface AppointmentAdminRowProps extends AppointmentRowData {
@@ -21,9 +23,11 @@ function AppointmentAdminRowBase({
   patientName,
   doctorName,
   specialty,
+  view,
   onComplete,
 }: AppointmentAdminRowProps) {
-  const canComplete = appointment.status === 'confirmed';
+  // Only a finished-but-not-completed appointment can be marked Done.
+  const canComplete = view === 'awaiting';
 
   return (
     <tr className="border-b border-border last:border-0">
@@ -34,7 +38,7 @@ function AppointmentAdminRowBase({
         {formatDate(appointment.date)} · {formatTime12h(appointment.startTime)}
       </td>
       <td className="px-3 py-2.5">
-        <AdminStatusBadge status={appointment.status} />
+        <AdminStatusBadge view={view} />
       </td>
       <td className="px-3 py-2.5">
         {canComplete ? (

@@ -4,7 +4,7 @@ import { validateBooking } from '@/utils';
 import type { Appointment, AppointmentStatus } from '@/types';
 import type { MedicalStore } from './medicalStoreContract';
 
-// Used by cancel/complete actions — returns a new array with the target status update
+// Returns a new array with the target appointment's status updated.
 function setAppointmentStatus(
   appointments: Appointment[],
   id: string,
@@ -38,14 +38,12 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
 
   removeDoctor: (id) => {
     const { appointments } = get();
-    // Block deletion while the doctor has non-cancelled appointments.
-    const blocking = appointments.filter(
-      (a) => a.doctorId === id && a.status !== 'cancelled'
-    );
+    // Block deletion while the doctor still has appointments.
+    const blocking = appointments.filter((a) => a.doctorId === id);
     if (blocking.length > 0) {
       return {
         ok: false,
-        reason: `This doctor has ${blocking.length} active appointment${
+        reason: `This doctor has ${blocking.length} appointment${
           blocking.length === 1 ? '' : 's'
         }. Cancel or complete them before deleting.`,
       };
@@ -61,13 +59,10 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
 
   setDoctorDayOff: (doctorId, isoDate) => {
     const { appointments } = get();
-    // Refuse a day off that collides with a non-cancelled appointment — marking
-    // it off would strand the patient's booking against the derived-slots model.
+    // Refuse a day off that collides with an appointment — marking it off would
+    // strand the patient's booking against the derived-slots model.
     const conflicts = appointments.filter(
-      (a) =>
-        a.doctorId === doctorId &&
-        a.date === isoDate &&
-        a.status !== 'cancelled'
+      (a) => a.doctorId === doctorId && a.date === isoDate
     );
     if (conflicts.length > 0) {
       return {
@@ -142,8 +137,9 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
   },
 
   cancelAppointment: (id) => {
+    // Cancelling deletes the appointment, which frees its slot
     set((s) => {
-      const next = setAppointmentStatus(s.appointments, id, 'cancelled');
+      const next = s.appointments.filter((a) => a.id !== id);
       dataService.saveAppointments(next);
       return { appointments: next };
     });

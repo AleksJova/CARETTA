@@ -48,10 +48,9 @@ export function DayOffModal({ doctor, onOpenChange }: DayOffModalProps) {
   const daysOff = [...current.daysOff].sort();
   const alreadyOff = daysOff.includes(date);
 
-  // A day with a non-cancelled appointment can't be marked off
+  // A day with an appointment can't be marked off.
   const conflictCount = appointments.filter(
-    (a) =>
-      a.doctorId === current.id && a.date === date && a.status !== 'cancelled'
+    (a) => a.doctorId === current.id && a.date === date
   ).length;
   const hasConflict = conflictCount > 0;
 

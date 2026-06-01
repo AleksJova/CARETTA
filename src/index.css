@@ -73,6 +73,10 @@
     --shift-afternoon-foreground: 209 82% 27%; /* #0C447C */
     --shift-afternoon-surface: 209 71% 94%; /* #E6F1FB */
 
+    /* "In progress" appointment badge — indigo */
+    --progress-foreground: 247 45% 37%; /* #3C3489 */
+    --progress-surface: 245 83% 96%; /* #EEEDFE */
+
     --radius: 0.5rem;
   }
 }

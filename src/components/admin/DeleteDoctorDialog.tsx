@@ -31,9 +31,7 @@ export function DeleteDoctorDialog({
   const open = doctor !== null;
 
   const activeCount = doctor
-    ? appointments.filter(
-        (a) => a.doctorId === doctor.id && a.status !== 'cancelled'
-      ).length
+    ? appointments.filter((a) => a.doctorId === doctor.id).length
     : 0;
   const blocked = activeCount > 0;
 

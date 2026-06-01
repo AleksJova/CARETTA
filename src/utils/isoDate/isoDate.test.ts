@@ -6,6 +6,8 @@ import {
   nextOpenDay,
   isoToLocalDate,
   localDateToISO,
+  nowHHmm,
+  isSlotInPast,
 } from './isoDate';
 
 describe('isSunday', () => {
@@ -76,5 +78,28 @@ describe('nextOpenDay', () => {
 
   it('returns the input unchanged for a malformed date', () => {
     expect(nextOpenDay('nope')).toBe('nope');
+  });
+});
+
+describe('nowHHmm', () => {
+  it('formats local hours and minutes as zero-padded "HH:mm"', () => {
+    expect(nowHHmm(new Date(2026, 5, 1, 9, 5))).toBe('09:05');
+    expect(nowHHmm(new Date(2026, 5, 1, 13, 0))).toBe('13:00');
+    expect(nowHHmm(new Date(2026, 5, 1, 0, 0))).toBe('00:00');
+  });
+});
+
+describe('isSlotInPast', () => {
+  const TODAY = '2026-06-01';
+
+  it('treats earlier days as past and later days as not past', () => {
+    expect(isSlotInPast('2026-05-31', '23:00', TODAY, '08:00')).toBe(true);
+    expect(isSlotInPast('2026-06-02', '07:00', TODAY, '23:00')).toBe(false);
+  });
+
+  it('on today, a slot is past once its start time is at or before now', () => {
+    expect(isSlotInPast(TODAY, '08:00', TODAY, '13:00')).toBe(true); // earlier
+    expect(isSlotInPast(TODAY, '13:00', TODAY, '13:00')).toBe(true); // running hour
+    expect(isSlotInPast(TODAY, '14:00', TODAY, '13:00')).toBe(false); // later
   });
 });

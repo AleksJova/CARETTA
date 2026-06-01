@@ -49,17 +49,14 @@ describe('availableSlots', () => {
     ).toBe(false);
   });
 
-  it('cancelling restores the slot', () => {
-    const cancelled = availableSlots(
-      [patel],
-      [booking({ status: 'cancelled' })],
-      MONDAY,
-      { date: MONDAY }
-    );
+  it('removing the appointment (cancel) restores the slot', () => {
+    // Cancelling deletes the appointment, so its slot is available again — the
+    // same as having no appointment at all.
+    const restored = availableSlots([patel], [], MONDAY, { date: MONDAY });
 
-    expect(cancelled).toHaveLength(5);
+    expect(restored).toHaveLength(5);
     expect(
-      cancelled.some((s) => s.date === MONDAY && s.startTime === '09:00')
+      restored.some((s) => s.date === MONDAY && s.startTime === '09:00')
     ).toBe(true);
   });
 

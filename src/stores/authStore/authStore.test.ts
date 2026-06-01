@@ -1,18 +1,59 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useAuthStore, useRole } from './authStore';
+import { useAuthStore, useRole, usePatientId } from './authStore';
 
 beforeEach(() => {
-  useAuthStore.setState({ role: null });
+  useAuthStore.setState({ role: null, patientId: null });
   localStorage.clear();
 });
 
 describe('useAuthStore shape', () => {
-  it('exposes role and auth actions', () => {
+  it('exposes role, patientId and auth actions', () => {
     const s = useAuthStore.getState();
     expect(s.role).toBeNull();
+    expect(s.patientId).toBeNull();
     expect(typeof s.loginAs).toBe('function');
+    expect(typeof s.selectPatient).toBe('function');
     expect(typeof s.logout).toBe('function');
+  });
+});
+
+describe('patient identity', () => {
+  it('loginAs("patient") starts without an identity', () => {
+    act(() => useAuthStore.getState().loginAs('patient'));
+    expect(useAuthStore.getState().role).toBe('patient');
+    expect(useAuthStore.getState().patientId).toBeNull();
+  });
+
+  it('selectPatient sets and persists the identity', () => {
+    act(() => useAuthStore.getState().loginAs('patient'));
+    act(() => useAuthStore.getState().selectPatient('pat-42'));
+    expect(useAuthStore.getState().patientId).toBe('pat-42');
+    expect(localStorage.getItem('caretta:patientId')).toBe('pat-42');
+  });
+
+  it('switching role clears a prior patient identity', () => {
+    act(() => useAuthStore.getState().loginAs('patient'));
+    act(() => useAuthStore.getState().selectPatient('pat-42'));
+    act(() => useAuthStore.getState().loginAs('admin'));
+    expect(useAuthStore.getState().patientId).toBeNull();
+    expect(localStorage.getItem('caretta:patientId')).toBeNull();
+  });
+
+  it('logout clears the patient identity', () => {
+    act(() => useAuthStore.getState().loginAs('patient'));
+    act(() => useAuthStore.getState().selectPatient('pat-42'));
+    act(() => useAuthStore.getState().logout());
+    expect(useAuthStore.getState().patientId).toBeNull();
+    expect(localStorage.getItem('caretta:patientId')).toBeNull();
+  });
+
+  it('usePatientId reflects the current identity', () => {
+    const { result } = renderHook(() => usePatientId());
+    expect(result.current).toBeNull();
+    act(() => useAuthStore.getState().loginAs('patient'));
+    act(() => useAuthStore.getState().selectPatient('pat-7'));
+    expect(result.current).toBe('pat-7');
   });
 });
 

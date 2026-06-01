@@ -23,16 +23,17 @@ const PATIENT: Patient = {
   phone: '+1 (555) 0111',
 };
 
-// Appointments are dated today so they fall within the page's default
-// (today) date filter.
+// Appointments are dated today (so they fall within the default whole-week
+// view) at a slot that has already ended — 00:00–00:01 — so a confirmed one
+// deterministically reads as "Awaiting completion" regardless of the wall clock.
 function appointment(id: string, status: Appointment['status']): Appointment {
   return {
     id,
     doctorId: DOCTOR.id,
     patientId: PATIENT.id,
     date: todayISO(),
-    startTime: '09:00',
-    endTime: '10:00',
+    startTime: '00:00',
+    endTime: '00:01',
     status,
   };
 }
@@ -72,25 +73,11 @@ describe('AppointmentsPage', () => {
     const row = screen.getByText('Ana Rivera').closest('tr')!;
     expect(within(row).getByText('Dr. Emily Carter')).toBeInTheDocument();
     expect(within(row).getByText('Cardiology')).toBeInTheDocument();
-    // A confirmed appointment reads as "Pending" in the admin view.
-    expect(within(row).getByText('Pending')).toBeInTheDocument();
+    // A past, still-confirmed appointment reads as "Awaiting completion".
+    expect(within(row).getByText('Awaiting completion')).toBeInTheDocument();
   });
 
-  it('excludes cancelled appointments from the admin view', () => {
-    useMedicalStore.setState({
-      appointments: [
-        appointment('a-confirmed', 'confirmed'),
-        appointment('a-cancelled', 'cancelled'),
-      ],
-    });
-    renderPage();
-
-    // One visible data row (the confirmed/"Pending" one); the cancelled row is gone.
-    expect(screen.queryByText('Cancelled')).not.toBeInTheDocument();
-    expect(screen.getByText('Pending')).toBeInTheDocument();
-  });
-
-  it('only offers Complete for confirmed appointments; completed rows show a dash', () => {
+  it('only offers Complete for an awaiting (past, confirmed) appointment; completed rows show a dash', () => {
     useMedicalStore.setState({
       appointments: [
         appointment('a-confirmed', 'confirmed'),
@@ -99,7 +86,7 @@ describe('AppointmentsPage', () => {
     });
     renderPage();
 
-    // Exactly one Complete button — for the single confirmed row.
+    // Exactly one Complete button — for the single awaiting row.
     expect(screen.getAllByRole('button', { name: /complete/i })).toHaveLength(
       1
     );

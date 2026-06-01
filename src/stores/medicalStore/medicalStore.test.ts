@@ -138,7 +138,8 @@ describe('Immutable state updates — mutations produce new object references', 
     });
     const after = useMedicalStore.getState().appointments;
     expect(after).not.toBe(before);
-    expect(after[0].status).toBe('cancelled');
+    // Cancelling deletes the appointment, freeing its slot.
+    expect(after).toHaveLength(0);
   });
 });
 
@@ -211,7 +212,7 @@ describe('Doctor actions — adding, updating, and managing days off', () => {
     expect(useMedicalStore.getState().doctors[0].daysOff).toHaveLength(0);
   });
 
-  it('setDoctorDayOff allows a date whose only appointment is cancelled', () => {
+  it('setDoctorDayOff allows a date once its appointment is cancelled (deleted)', () => {
     useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
     act(() => {
       useMedicalStore.getState().bookAppointment(BASE_INPUT);
@@ -227,7 +228,7 @@ describe('Doctor actions — adding, updating, and managing days off', () => {
     expect(ok).toBe(true);
   });
 
-  it('removeDoctor deletes a doctor with no active appointments', () => {
+  it('removeDoctor deletes a doctor with no appointments', () => {
     useMedicalStore.setState({ doctors: [DOCTOR], appointments: [] });
     let ok = false;
     act(() => {
@@ -250,7 +251,7 @@ describe('Doctor actions — adding, updating, and managing days off', () => {
     expect(useMedicalStore.getState().doctors).toHaveLength(1);
   });
 
-  it('removeDoctor allows deletion when the only appointment is cancelled', () => {
+  it('removeDoctor allows deletion once the appointment is cancelled (deleted)', () => {
     useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
     act(() => {
       useMedicalStore.getState().bookAppointment(BASE_INPUT);
@@ -345,12 +346,12 @@ describe('cancelAppointment / completeAppointment — status transitions and slo
     useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
   });
 
-  it('cancel changes status to cancelled and the slot can be rebooked', () => {
+  it('cancel deletes the appointment and the slot can be rebooked', () => {
     act(() => useMedicalStore.getState().bookAppointment(BASE_INPUT));
     const apptId = useMedicalStore.getState().appointments[0].id;
 
     act(() => useMedicalStore.getState().cancelAppointment(apptId));
-    expect(useMedicalStore.getState().appointments[0].status).toBe('cancelled');
+    expect(useMedicalStore.getState().appointments).toHaveLength(0);
 
     let rebook!: ReturnType<
       typeof useMedicalStore.getState

@@ -4,13 +4,11 @@ import type { AppointmentStatus } from '@/types';
 const STATUS_STYLES: Record<AppointmentStatus, string> = {
   confirmed: 'bg-accent-teal text-accent-teal-foreground',
   completed: 'bg-completed/10 text-completed',
-  cancelled: 'bg-cancelled/10 text-cancelled',
 };
 
 const STATUS_LABEL: Record<AppointmentStatus, string> = {
   confirmed: 'Confirmed',
   completed: 'Completed',
-  cancelled: 'Cancelled',
 };
 
 export function StatusBadge({ status }: { status: AppointmentStatus }) {
