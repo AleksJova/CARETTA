@@ -16,7 +16,7 @@ export default function Header({
 
   return (
     <header className="border-b border-border bg-white">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-2.5">
           <Logo size="sm" />
           <span className="text-lg font-medium tracking-tight text-primary">
