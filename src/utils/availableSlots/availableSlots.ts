@@ -8,7 +8,6 @@ export interface SlotFilters {
   date?: string; // ISO date — when set, only that single day's slots are returned
 }
 
-// Cancelled appointments are excluded from booked slots (so their slots reappear).
 function bookedKey(doctorId: string, date: string, startTime: string): string {
   return `${doctorId}|${date}|${startTime}`;
 }
@@ -23,9 +22,7 @@ export function availableSlots(
   filters: SlotFilters = {}
 ): Slot[] {
   const booked = new Set(
-    appointments
-      .filter((a) => a.status !== 'cancelled')
-      .map((a) => bookedKey(a.doctorId, a.date, a.startTime))
+    appointments.map((a) => bookedKey(a.doctorId, a.date, a.startTime))
   );
 
   const candidates = doctors.filter((doctor) => {

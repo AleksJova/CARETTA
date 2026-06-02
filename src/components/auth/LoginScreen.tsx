@@ -1,7 +1,8 @@
-import { ShieldHalf, User } from 'lucide-react';
+import { Sprout, ShieldHalf, User } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { Role } from '@/types';
 import { useAuthStore } from '@/stores/authStore/authStore';
+import { isSeeded, toggleSeed } from '@/utils';
 import { Button } from '@/components/ui/button';
 import TurtlePond from '@/components/shared/TurtlePondBg';
 import Logo from '@/components/shared/Logo';
@@ -37,10 +38,25 @@ function RoleButton({
  */
 export default function LoginScreen() {
   const loginAs = useAuthStore((s) => s.loginAs);
+  const seeded = isSeeded();
 
   return (
     <main className="h-svh w-full select-none">
       <TurtlePond turtleCount={5}>
+        {/* Demo-only: load or clear sample data before signing in, then reload. */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={toggleSeed}
+          className="absolute right-3 top-3 bg-white/65 backdrop-blur-md"
+          title={seeded ? 'Clear demo data' : 'Load demo data'}
+        >
+          <Sprout
+            className={seeded ? 'text-primary' : 'text-muted-foreground'}
+            aria-hidden="true"
+          />
+          {seeded ? 'Clear data' : 'Seed data'}
+        </Button>
         <div className="w-[320px] max-w-[90vw] rounded-2xl border border-white/70 bg-white/65 p-6 backdrop-blur-md sm:p-8">
           <div className="mb-6 flex flex-col items-center text-center">
             <Logo className="mb-3" />

@@ -4,7 +4,13 @@ import { formatClockTime, localPlaceLabel, localTimeZone } from '@/utils';
 
 const MINUTE_MS = 60_000;
 
-function LocalTimeBadgeBase() {
+interface LocalTimeBadgeProps {
+  iconClassName?: string;
+}
+
+function LocalTimeBadgeBase({
+  iconClassName = 'text-primary',
+}: LocalTimeBadgeProps) {
   const zone = localTimeZone();
   const [now, setNow] = useState(() => new Date());
 
@@ -28,7 +34,7 @@ function LocalTimeBadgeBase() {
       className="flex items-center gap-1.5 text-sm text-muted-foreground"
       title={`Your local time (${zone})`}
     >
-      <MapPin className="size-3.5 text-primary" aria-hidden="true" />
+      <MapPin className={`size-3.5 ${iconClassName}`} aria-hidden="true" />
       <span>{localPlaceLabel(zone)}</span>
       <span aria-hidden="true">·</span>
       <time className="font-medium tabular-nums text-foreground">

@@ -22,6 +22,27 @@ These are the architectural and design decisions behind the prototype and the re
 6. One product improvement you would propose
    If you were presenting this to the product team after delivering the prototype, what would you suggest adding or changing, and why?
 
+## Render control: time-based list freshness
+
+Two patient-facing lists depend on the current time: the upcoming-appointments list
+(`UpcomingAppointments`) and the available-slots list (`useAvailableSlots`). Both are
+derived with `useMemo` and read "now" through `todayISO()` / `nowHHmm()` once per recompute.
+They refresh when their data changes (appointments, doctors, filters) — not on a timer.
+
+The trade-off: a same-day entry whose start time passes while the tab sits idle stays
+visible until the next interaction that changes the underlying data (a book/cancel, a filter
+change) rather than disappearing on the minute. We chose this deliberately over ticking a
+`now` value on a `setInterval`, because an interval is a wall-clock re-render source that
+re-runs the memo and re-renders the list whether or not any entry is actually expiring — the
+opposite of the deliberate render control the app aims for, and especially costly on the
+slot list, which the performance guidelines single out as the expensive computation that
+must not recompute needlessly.
+
+The staleness is display-only and cannot cause a bad write: slot derivation excludes past
+times, and `validateBooking` independently rejects a started slot, so a lingering row cannot
+be booked. If instant freshness were ever required, the narrowest fix is an interval gated on
+whether a same-day entry is still pending, so idle patients with no today-entries pay nothing.
+
 ## Security: client-side role gating
 
 The role a user picks on login is stored client-side and used only to decide which

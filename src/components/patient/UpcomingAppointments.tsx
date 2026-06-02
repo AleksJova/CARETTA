@@ -4,8 +4,8 @@ import {
   useAppointments,
   useDoctors,
 } from '@/stores/medicalStore/medicalStore';
-import { upcomingAppointments, todayISO } from '@/utils';
-import { DEMO_PATIENT } from '@/services';
+import { upcomingAppointments, todayISO, nowHHmm } from '@/utils';
+import { usePatientId } from '@/stores/authStore/authStore';
 import { AppointmentRow } from './AppointmentRow';
 import { CancelDialog } from './CancelDialog';
 import type { Appointment, Doctor } from '@/types';
@@ -13,11 +13,16 @@ import type { Appointment, Doctor } from '@/types';
 export function UpcomingAppointments() {
   const appointments = useAppointments();
   const doctors = useDoctors();
+  const patientId = usePatientId();
   const [pendingCancel, setPendingCancel] = useState<Appointment | null>(null);
 
+  // See *Render control: time-based list freshness* in DESIGN.md.
   const upcoming = useMemo(
-    () => upcomingAppointments(appointments, DEMO_PATIENT.id, todayISO()),
-    [appointments]
+    () =>
+      patientId
+        ? upcomingAppointments(appointments, patientId, todayISO(), nowHHmm())
+        : [],
+    [appointments, patientId]
   );
 
   const doctorsById = useMemo(() => {

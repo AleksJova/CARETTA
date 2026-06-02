@@ -44,6 +44,7 @@ describe('Store shape — exposes expected state slices and action methods', () 
     const s = useMedicalStore.getState();
     expect(typeof s.addDoctor).toBe('function');
     expect(typeof s.updateDoctor).toBe('function');
+    expect(typeof s.removeDoctor).toBe('function');
     expect(typeof s.setDoctorDayOff).toBe('function');
     expect(typeof s.removeDoctorDayOff).toBe('function');
     expect(typeof s.addPatient).toBe('function');
@@ -137,7 +138,8 @@ describe('Immutable state updates — mutations produce new object references', 
     });
     const after = useMedicalStore.getState().appointments;
     expect(after).not.toBe(before);
-    expect(after[0].status).toBe('cancelled');
+    // Cancelling deletes the appointment, freeing its slot.
+    expect(after).toHaveLength(0);
   });
 });
 
@@ -179,6 +181,102 @@ describe('Doctor actions — adding, updating, and managing days off', () => {
       useMedicalStore.getState().removeDoctorDayOff(DOCTOR.id, '2026-06-10')
     );
     expect(useMedicalStore.getState().doctors[0].daysOff).toHaveLength(0);
+  });
+
+  it('setDoctorDayOff succeeds when no appointment falls on the date', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR] });
+    let ok = false;
+    act(() => {
+      ok = useMedicalStore
+        .getState()
+        .setDoctorDayOff(DOCTOR.id, '2026-06-10').ok;
+    });
+    expect(ok).toBe(true);
+    expect(useMedicalStore.getState().doctors[0].daysOff).toContain(
+      '2026-06-10'
+    );
+  });
+
+  it('setDoctorDayOff refuses a day the doctor does not work', () => {
+    // DOCTOR works Mon–Fri; 2026-06-06 is a Saturday.
+    useMedicalStore.setState({ doctors: [DOCTOR] });
+    let ok = true;
+    act(() => {
+      ok = useMedicalStore
+        .getState()
+        .setDoctorDayOff(DOCTOR.id, '2026-06-06').ok;
+    });
+    expect(ok).toBe(false);
+    expect(useMedicalStore.getState().doctors[0].daysOff).toHaveLength(0);
+  });
+
+  it('setDoctorDayOff refuses a date with a non-cancelled appointment', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
+    act(() => {
+      useMedicalStore.getState().bookAppointment(BASE_INPUT);
+    });
+    let ok = true;
+    act(() => {
+      ok = useMedicalStore
+        .getState()
+        .setDoctorDayOff(DOCTOR.id, BASE_INPUT.date).ok;
+    });
+    expect(ok).toBe(false);
+    expect(useMedicalStore.getState().doctors[0].daysOff).toHaveLength(0);
+  });
+
+  it('setDoctorDayOff allows a date once its appointment is cancelled (deleted)', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
+    act(() => {
+      useMedicalStore.getState().bookAppointment(BASE_INPUT);
+    });
+    const id = useMedicalStore.getState().appointments[0].id;
+    act(() => useMedicalStore.getState().cancelAppointment(id));
+    let ok = false;
+    act(() => {
+      ok = useMedicalStore
+        .getState()
+        .setDoctorDayOff(DOCTOR.id, BASE_INPUT.date).ok;
+    });
+    expect(ok).toBe(true);
+  });
+
+  it('removeDoctor deletes a doctor with no appointments', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR], appointments: [] });
+    let ok = false;
+    act(() => {
+      ok = useMedicalStore.getState().removeDoctor(DOCTOR.id).ok;
+    });
+    expect(ok).toBe(true);
+    expect(useMedicalStore.getState().doctors).toHaveLength(0);
+  });
+
+  it('removeDoctor refuses when the doctor has a confirmed appointment', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
+    act(() => {
+      useMedicalStore.getState().bookAppointment(BASE_INPUT);
+    });
+    let ok = true;
+    act(() => {
+      ok = useMedicalStore.getState().removeDoctor(DOCTOR.id).ok;
+    });
+    expect(ok).toBe(false);
+    expect(useMedicalStore.getState().doctors).toHaveLength(1);
+  });
+
+  it('removeDoctor allows deletion once the appointment is cancelled (deleted)', () => {
+    useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
+    act(() => {
+      useMedicalStore.getState().bookAppointment(BASE_INPUT);
+    });
+    const id = useMedicalStore.getState().appointments[0].id;
+    act(() => useMedicalStore.getState().cancelAppointment(id));
+    let ok = false;
+    act(() => {
+      ok = useMedicalStore.getState().removeDoctor(DOCTOR.id).ok;
+    });
+    expect(ok).toBe(true);
+    expect(useMedicalStore.getState().doctors).toHaveLength(0);
   });
 });
 
@@ -261,12 +359,12 @@ describe('cancelAppointment / completeAppointment — status transitions and slo
     useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
   });
 
-  it('cancel changes status to cancelled and the slot can be rebooked', () => {
+  it('cancel deletes the appointment and the slot can be rebooked', () => {
     act(() => useMedicalStore.getState().bookAppointment(BASE_INPUT));
     const apptId = useMedicalStore.getState().appointments[0].id;
 
     act(() => useMedicalStore.getState().cancelAppointment(apptId));
-    expect(useMedicalStore.getState().appointments[0].status).toBe('cancelled');
+    expect(useMedicalStore.getState().appointments).toHaveLength(0);
 
     let rebook!: ReturnType<
       typeof useMedicalStore.getState

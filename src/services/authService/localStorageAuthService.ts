@@ -1,6 +1,7 @@
 import type { AuthService } from './authServiceContract';
 
 const KEY = 'caretta:role';
+const PATIENT_KEY = 'caretta:patientId';
 
 export const authService: AuthService = {
   getRole: () => {
@@ -22,6 +23,30 @@ export const authService: AuthService = {
   clearRole: () => {
     try {
       localStorage.removeItem(KEY);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  getPatientId: () => {
+    try {
+      return localStorage.getItem(PATIENT_KEY);
+    } catch {
+      return null;
+    }
+  },
+  savePatientId: (patientId) => {
+    try {
+      localStorage.setItem(PATIENT_KEY, patientId);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+  clearPatientId: () => {
+    try {
+      localStorage.removeItem(PATIENT_KEY);
       return true;
     } catch {
       return false;

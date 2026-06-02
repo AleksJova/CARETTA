@@ -10,9 +10,12 @@ export type { SlotFilters } from './availableSlots/availableSlots';
 export { upcomingAppointments } from './upcomingAppointments/upcomingAppointments';
 export {
   isSunday,
+  weekdayOf,
   isoToDate,
   dateToISO,
   todayISO,
+  nowHHmm,
+  isSlotInPast,
   nextOpenDay,
   isoToLocalDate,
   localDateToISO,
@@ -23,3 +26,15 @@ export {
   localPlaceLabel,
   formatClockTime,
 } from './localTime/localTime';
+export { formatWorkingDays } from './formatWorkingDays/formatWorkingDays';
+export { weekDaysOff, weekDaysOffList } from './weekDaysOff/weekDaysOff';
+export type { DayOffEntry } from './weekDaysOff/weekDaysOff';
+export { deriveAppointmentView } from './appointmentView/appointmentView';
+export type { AppointmentView } from './appointmentView/appointmentView';
+export {
+  SEED_PATIENTS,
+  SEED_DOCTORS,
+  buildSeedAppointments,
+  isSeeded,
+  toggleSeed,
+} from './seedData/seedData';

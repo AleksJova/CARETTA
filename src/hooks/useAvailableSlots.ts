@@ -3,7 +3,13 @@ import {
   useDoctors,
   useAppointments,
 } from '@/stores/medicalStore/medicalStore';
-import { availableSlots, getWeekStart, todayISO } from '@/utils';
+import {
+  availableSlots,
+  getWeekStart,
+  isSlotInPast,
+  nowHHmm,
+  todayISO,
+} from '@/utils';
 import type { SlotFilters } from '@/utils';
 import type { Slot } from '@/types';
 
@@ -21,9 +27,11 @@ export function useAvailableSlots(
   const appointments = useAppointments();
   const weekStart = getWeekStart(anchorDate);
   const today = todayISO();
+  const now = nowHHmm();
 
   const { specialty, doctorId, date } = filters;
 
+  // See *Render control: time-based list freshness* in DESIGN.md.
   return useMemo(() => {
     if (date && date < today) {
       return [];
@@ -33,6 +41,9 @@ export function useAvailableSlots(
       doctorId,
       date,
     });
-    return date ? all : all.filter((slot) => slot.date >= today);
-  }, [doctors, appointments, weekStart, specialty, doctorId, date, today]);
+    // Hide slots that have already started — past days or hours
+    return all.filter(
+      (slot) => !isSlotInPast(slot.date, slot.startTime, today, now)
+    );
+  }, [doctors, appointments, weekStart, specialty, doctorId, date, today, now]);
 }

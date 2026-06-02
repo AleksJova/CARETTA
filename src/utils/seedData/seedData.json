@@ -1,0 +1,292 @@
+{
+  "patients": [
+    {
+      "id": "pat-lucia",
+      "name": "Lucía Fernández",
+      "email": "lucia.fernandez@example.com",
+      "phone": "+34 612 04 88 21"
+    },
+    {
+      "id": "pat-grace",
+      "name": "Grace Whitfield",
+      "email": "grace.whitfield@example.com",
+      "phone": "+44 7700 900145"
+    }
+  ],
+  "doctors": [
+    {
+      "id": "doc-carter",
+      "name": "Dr. Emily Carter",
+      "specialty": "Cardiology",
+      "shift": "morning",
+      "workingDays": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+      "daysOff": []
+    },
+    {
+      "id": "doc-delgado",
+      "name": "Dr. Carmen Delgado",
+      "specialty": "Cardiology",
+      "shift": "afternoon",
+      "workingDays": ["Mon", "Wed", "Thu", "Fri", "Sat"],
+      "daysOff": [
+        {
+          "dayOffset": 2
+        }
+      ]
+    },
+    {
+      "id": "doc-ruiz",
+      "name": "Dr. Begoña Ruiz",
+      "specialty": "Dermatology",
+      "shift": "afternoon",
+      "workingDays": ["Tue", "Wed", "Thu", "Fri", "Sat"],
+      "daysOff": []
+    },
+    {
+      "id": "doc-bennett",
+      "name": "Dr. Sophie Bennett",
+      "specialty": "Dermatology",
+      "shift": "morning",
+      "workingDays": ["Mon", "Tue", "Thu", "Fri"],
+      "daysOff": [
+        {
+          "dayOffset": 4
+        }
+      ]
+    },
+    {
+      "id": "doc-stefanoska",
+      "name": "Dr. Marija Stefanoska",
+      "specialty": "Pulmonology",
+      "shift": "morning",
+      "workingDays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+      "daysOff": []
+    },
+    {
+      "id": "doc-petrovska",
+      "name": "Dr. Ana Petrovska",
+      "specialty": "Neurology",
+      "shift": "afternoon",
+      "workingDays": ["Mon", "Tue", "Wed", "Thu", "Fri"],
+      "daysOff": []
+    }
+  ],
+  "appointments": [
+    {
+      "id": "appt-01",
+      "doctorId": "doc-carter",
+      "patientId": "pat-lucia",
+      "dayOffset": 0,
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "status": "completed"
+    },
+    {
+      "id": "appt-02",
+      "doctorId": "doc-stefanoska",
+      "patientId": "pat-grace",
+      "dayOffset": 0,
+      "startTime": "08:00",
+      "endTime": "09:00",
+      "status": "completed"
+    },
+    {
+      "id": "appt-03",
+      "doctorId": "doc-petrovska",
+      "patientId": "pat-lucia",
+      "dayOffset": 0,
+      "startTime": "14:00",
+      "endTime": "15:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-04",
+      "doctorId": "doc-delgado",
+      "patientId": "pat-grace",
+      "dayOffset": 0,
+      "startTime": "16:00",
+      "endTime": "17:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-05",
+      "doctorId": "doc-bennett",
+      "patientId": "pat-lucia",
+      "dayOffset": 1,
+      "startTime": "10:00",
+      "endTime": "11:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-06",
+      "doctorId": "doc-stefanoska",
+      "patientId": "pat-grace",
+      "dayOffset": 1,
+      "startTime": "11:00",
+      "endTime": "12:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-07",
+      "doctorId": "doc-ruiz",
+      "patientId": "pat-lucia",
+      "dayOffset": 1,
+      "startTime": "13:00",
+      "endTime": "14:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-08",
+      "doctorId": "doc-petrovska",
+      "patientId": "pat-grace",
+      "dayOffset": 1,
+      "startTime": "17:00",
+      "endTime": "18:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-09",
+      "doctorId": "doc-stefanoska",
+      "patientId": "pat-lucia",
+      "dayOffset": 2,
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-10",
+      "doctorId": "doc-ruiz",
+      "patientId": "pat-grace",
+      "dayOffset": 2,
+      "startTime": "15:00",
+      "endTime": "16:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-11",
+      "doctorId": "doc-carter",
+      "patientId": "pat-lucia",
+      "dayOffset": 2,
+      "startTime": "10:00",
+      "endTime": "11:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-12",
+      "doctorId": "doc-petrovska",
+      "patientId": "pat-grace",
+      "dayOffset": 2,
+      "startTime": "16:00",
+      "endTime": "17:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-13",
+      "doctorId": "doc-carter",
+      "patientId": "pat-grace",
+      "dayOffset": 3,
+      "startTime": "08:00",
+      "endTime": "09:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-14",
+      "doctorId": "doc-bennett",
+      "patientId": "pat-lucia",
+      "dayOffset": 3,
+      "startTime": "09:00",
+      "endTime": "10:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-15",
+      "doctorId": "doc-delgado",
+      "patientId": "pat-grace",
+      "dayOffset": 3,
+      "startTime": "13:00",
+      "endTime": "14:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-16",
+      "doctorId": "doc-stefanoska",
+      "patientId": "pat-lucia",
+      "dayOffset": 3,
+      "startTime": "12:00",
+      "endTime": "13:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-17",
+      "doctorId": "doc-petrovska",
+      "patientId": "pat-grace",
+      "dayOffset": 4,
+      "startTime": "15:00",
+      "endTime": "16:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-18",
+      "doctorId": "doc-carter",
+      "patientId": "pat-lucia",
+      "dayOffset": 4,
+      "startTime": "11:00",
+      "endTime": "12:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-19",
+      "doctorId": "doc-ruiz",
+      "patientId": "pat-grace",
+      "dayOffset": 4,
+      "startTime": "14:00",
+      "endTime": "15:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-20",
+      "doctorId": "doc-delgado",
+      "patientId": "pat-lucia",
+      "dayOffset": 4,
+      "startTime": "17:00",
+      "endTime": "18:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-21",
+      "doctorId": "doc-stefanoska",
+      "patientId": "pat-grace",
+      "dayOffset": 5,
+      "startTime": "08:00",
+      "endTime": "09:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-22",
+      "doctorId": "doc-ruiz",
+      "patientId": "pat-lucia",
+      "dayOffset": 5,
+      "startTime": "16:00",
+      "endTime": "17:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-23",
+      "doctorId": "doc-delgado",
+      "patientId": "pat-grace",
+      "dayOffset": 5,
+      "startTime": "15:00",
+      "endTime": "16:00",
+      "status": "confirmed"
+    },
+    {
+      "id": "appt-24",
+      "doctorId": "doc-stefanoska",
+      "patientId": "pat-lucia",
+      "dayOffset": 5,
+      "startTime": "10:00",
+      "endTime": "11:00",
+      "status": "confirmed"
+    }
+  ]
+}

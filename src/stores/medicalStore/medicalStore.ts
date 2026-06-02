@@ -1,10 +1,9 @@
 import { create } from 'zustand';
 import { dataService } from '@/services';
-import { validateBooking } from '@/utils';
+import { validateBooking, weekdayOf } from '@/utils';
 import type { Appointment, AppointmentStatus } from '@/types';
 import type { MedicalStore } from './medicalStoreContract';
 
-// Used by cancel/complete actions — returns a new array with the target status update
 function setAppointmentStatus(
   appointments: Appointment[],
   id: string,
@@ -36,7 +35,56 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
     });
   },
 
+  removeDoctor: (id) => {
+    const { appointments, doctors } = get();
+    if (!doctors.some((d) => d.id === id)) {
+      return { ok: false, reason: 'Doctor not found.' };
+    }
+    // Block deletion while the doctor still has appointments.
+    const blocking = appointments.filter((a) => a.doctorId === id);
+    if (blocking.length > 0) {
+      return {
+        ok: false,
+        reason: `This doctor has ${blocking.length} appointment${
+          blocking.length === 1 ? '' : 's'
+        }. Cancel or complete them before deleting.`,
+      };
+    }
+
+    set((s) => {
+      const next = s.doctors.filter((d) => d.id !== id);
+      dataService.saveDoctors(next);
+      return { doctors: next };
+    });
+    return { ok: true };
+  },
+
   setDoctorDayOff: (doctorId, isoDate) => {
+    const { appointments, doctors } = get();
+    const doctor = doctors.find((d) => d.id === doctorId);
+    if (!doctor) {
+      return { ok: false, reason: 'Doctor not found.' };
+    }
+
+    // Refuse a day the doctor doesn't work.
+    const weekday = weekdayOf(isoDate);
+    if (!weekday || !doctor.workingDays.includes(weekday)) {
+      return { ok: false, reason: 'The doctor does not work on this day.' };
+    }
+
+    // Refuse a day off that collides with an appointment.
+    const conflicts = appointments.filter(
+      (a) => a.doctorId === doctorId && a.date === isoDate
+    );
+    if (conflicts.length > 0) {
+      return {
+        ok: false,
+        reason: `This doctor has ${conflicts.length} appointment${
+          conflicts.length === 1 ? '' : 's'
+        } on this day. Cancel or reassign them before marking it off.`,
+      };
+    }
+
     set((s) => {
       const next = s.doctors.map((d) => {
         if (d.id !== doctorId) return d;
@@ -46,6 +94,7 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
       dataService.saveDoctors(next);
       return { doctors: next };
     });
+    return { ok: true };
   },
 
   removeDoctorDayOff: (doctorId, isoDate) => {
@@ -100,8 +149,9 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
   },
 
   cancelAppointment: (id) => {
+    // Cancelling deletes the appointment, which frees its slot
     set((s) => {
-      const next = setAppointmentStatus(s.appointments, id, 'cancelled');
+      const next = s.appointments.filter((a) => a.id !== id);
       dataService.saveAppointments(next);
       return { appointments: next };
     });
@@ -117,7 +167,6 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
 }));
 
 // Selector hooks — each subscribes to one piece of store state.
-
 export const useDoctors = () => useMedicalStore((s) => s.doctors);
 export const usePatients = () => useMedicalStore((s) => s.patients);
 export const useAppointments = () => useMedicalStore((s) => s.appointments);

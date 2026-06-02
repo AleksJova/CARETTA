@@ -19,16 +19,23 @@ import {
 
 interface DatePickerProps {
   id?: string;
-  value: string; // ISO date
+  value: string; // ISO date, or '' for no selection
   minISO: string; // earliest selectable day (today)
   onChange: (iso: string) => void;
+  placeholder?: string; // shown when no date is selected
 }
 
 /**
  * Custom date picker for slot search: disables Sundays and past dates, tints
  * Sundays red, and converts between ISO strings and local-time Dates at the boundary.
  */
-export function DatePicker({ id, value, minISO, onChange }: DatePickerProps) {
+export function DatePicker({
+  id,
+  value,
+  minISO,
+  onChange,
+  placeholder = 'Pick a date',
+}: DatePickerProps) {
   const [open, setOpen] = useState(false);
 
   // Local-time Dates for the calendar; ISO strings for everything else.
@@ -63,7 +70,7 @@ export function DatePicker({ id, value, minISO, onChange }: DatePickerProps) {
           variant="outline"
           className="h-9 w-full justify-between px-3 font-normal"
         >
-          {value ? formatDate(value) : 'Pick a date'}
+          {value ? formatDate(value) : placeholder}
           <CalendarIcon className="text-muted-foreground" aria-hidden="true" />
         </Button>
       </PopoverTrigger>

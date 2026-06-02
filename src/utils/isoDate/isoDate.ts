@@ -1,8 +1,16 @@
 // ISO date <-> Date conversions and predicates. All UTC-based for timezone consistency.
+import type { Weekday } from '@/types';
+import { UTC_DAY_TO_WEEKDAY } from '@/constants';
 
 // Sunday is index 0 in getUTCDay(); the clinic is closed Sundays.
 export function isSunday(date: Date): boolean {
   return date.getUTCDay() === 0;
+}
+
+// The clinic weekday an ISO date falls on, or null if closed (Sunday) or malformed.
+export function weekdayOf(iso: string): Weekday | null {
+  const date = isoToDate(iso);
+  return date ? (UTC_DAY_TO_WEEKDAY[date.getUTCDay()] ?? null) : null;
 }
 
 // "2026-06-01" -> Date at UTC midnight. Returns null for a malformed string.
@@ -23,6 +31,28 @@ export function dateToISO(date: Date): string {
 // Today's ISO date (local wall-clock day). Used as the earliest selectable date.
 export function todayISO(): string {
   return localDateToISO(new Date());
+}
+
+// Current local wall-clock time as "HH:mm". Pairs with todayISO() to compare
+// against a slot's (date, startTime) and hide today's already-started slots.
+export function nowHHmm(date = new Date()): string {
+  const h = String(date.getHours()).padStart(2, '0');
+  const m = String(date.getMinutes()).padStart(2, '0');
+  return `${h}:${m}`;
+}
+
+// True if a slot has already started relative to (todayDate, nowTime). A slot is
+// in the past on its own day once its start time is at or before now; earlier
+// days are always past, later days never are.
+export function isSlotInPast(
+  slotDate: string,
+  slotStartTime: string,
+  todayDate: string,
+  nowTime: string
+): boolean {
+  if (slotDate < todayDate) return true;
+  if (slotDate > todayDate) return false;
+  return slotStartTime <= nowTime;
 }
 
 // If iso is a Sunday, return the Monday after; otherwise return iso unchanged.
