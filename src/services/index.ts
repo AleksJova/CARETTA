@@ -1,4 +1,3 @@
-export { dataService } from './dataService/localStorageService';
+export { dataService } from './dataService/localStorageDataService';
 export { authService } from './authService/localStorageAuthService';
 export { slotSearchService } from './slotSearchService/sessionSlotSearchService';
-export { seedIfEmpty } from './seed/seedIfEmpty';

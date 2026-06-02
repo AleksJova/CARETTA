@@ -1,10 +1,9 @@
 import { create } from 'zustand';
 import { dataService } from '@/services';
-import { validateBooking } from '@/utils';
+import { validateBooking, weekdayOf } from '@/utils';
 import type { Appointment, AppointmentStatus } from '@/types';
 import type { MedicalStore } from './medicalStoreContract';
 
-// Returns a new array with the target appointment's status updated.
 function setAppointmentStatus(
   appointments: Appointment[],
   id: string,
@@ -58,9 +57,15 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
   },
 
   setDoctorDayOff: (doctorId, isoDate) => {
-    const { appointments } = get();
-    // Refuse a day off that collides with an appointment — marking it off would
-    // strand the patient's booking against the derived-slots model.
+    const { appointments, doctors } = get();
+    // Refuse a day the doctor doesn't work.
+    const doctor = doctors.find((d) => d.id === doctorId);
+    const weekday = weekdayOf(isoDate);
+    if (doctor && (!weekday || !doctor.workingDays.includes(weekday))) {
+      return { ok: false, reason: 'The doctor does not work on this day.' };
+    }
+
+    // Refuse a day off that collides with an appointment.
     const conflicts = appointments.filter(
       (a) => a.doctorId === doctorId && a.date === isoDate
     );
@@ -155,7 +160,6 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
 }));
 
 // Selector hooks — each subscribes to one piece of store state.
-
 export const useDoctors = () => useMedicalStore((s) => s.doctors);
 export const usePatients = () => useMedicalStore((s) => s.patients);
 export const useAppointments = () => useMedicalStore((s) => s.appointments);

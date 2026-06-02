@@ -197,6 +197,19 @@ describe('Doctor actions — adding, updating, and managing days off', () => {
     );
   });
 
+  it('setDoctorDayOff refuses a day the doctor does not work', () => {
+    // DOCTOR works Mon–Fri; 2026-06-06 is a Saturday.
+    useMedicalStore.setState({ doctors: [DOCTOR] });
+    let ok = true;
+    act(() => {
+      ok = useMedicalStore
+        .getState()
+        .setDoctorDayOff(DOCTOR.id, '2026-06-06').ok;
+    });
+    expect(ok).toBe(false);
+    expect(useMedicalStore.getState().doctors[0].daysOff).toHaveLength(0);
+  });
+
   it('setDoctorDayOff refuses a date with a non-cancelled appointment', () => {
     useMedicalStore.setState({ doctors: [DOCTOR], patients: [PATIENT] });
     act(() => {

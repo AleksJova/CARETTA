@@ -1,8 +1,16 @@
 // ISO date <-> Date conversions and predicates. All UTC-based for timezone consistency.
+import type { Weekday } from '@/types';
+import { UTC_DAY_TO_WEEKDAY } from '@/constants';
 
 // Sunday is index 0 in getUTCDay(); the clinic is closed Sundays.
 export function isSunday(date: Date): boolean {
   return date.getUTCDay() === 0;
+}
+
+// The clinic weekday an ISO date falls on, or null if closed (Sunday) or malformed.
+export function weekdayOf(iso: string): Weekday | null {
+  const date = isoToDate(iso);
+  return date ? (UTC_DAY_TO_WEEKDAY[date.getUTCDay()] ?? null) : null;
 }
 
 // "2026-06-01" -> Date at UTC midnight. Returns null for a malformed string.
