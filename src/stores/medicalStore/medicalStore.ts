@@ -61,10 +61,14 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
 
   setDoctorDayOff: (doctorId, isoDate) => {
     const { appointments, doctors } = get();
-    // Refuse a day the doctor doesn't work.
     const doctor = doctors.find((d) => d.id === doctorId);
+    if (!doctor) {
+      return { ok: false, reason: 'Doctor not found.' };
+    }
+
+    // Refuse a day the doctor doesn't work.
     const weekday = weekdayOf(isoDate);
-    if (doctor && (!weekday || !doctor.workingDays.includes(weekday))) {
+    if (!weekday || !doctor.workingDays.includes(weekday)) {
       return { ok: false, reason: 'The doctor does not work on this day.' };
     }
 
