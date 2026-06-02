@@ -36,7 +36,10 @@ export const useMedicalStore = create<MedicalStore>()((set, get) => ({
   },
 
   removeDoctor: (id) => {
-    const { appointments } = get();
+    const { appointments, doctors } = get();
+    if (!doctors.some((d) => d.id === id)) {
+      return { ok: false, reason: 'Doctor not found.' };
+    }
     // Block deletion while the doctor still has appointments.
     const blocking = appointments.filter((a) => a.doctorId === id);
     if (blocking.length > 0) {
