@@ -43,17 +43,22 @@ const nameField = z
 const doctorSchema = z.object({
   firstName: nameField,
   lastName: nameField,
-  specialty: z.enum(SPECIALTIES, { message: 'Specialty is required' }),
+  // Accepts '' as input so the Select can start unpicked, then narrows to the
+  // enum on output — '' fails the refine, so submitted values carry no ''.
+  specialty: z
+    .enum([...SPECIALTIES, ''] as const)
+    .refine((s): s is (typeof SPECIALTIES)[number] => s !== '', {
+      message: 'Specialty is required',
+    }),
   shift: z.enum(['morning', 'afternoon']),
   workingDays: z
     .array(z.enum(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']))
     .min(1, 'Select at least one working day'),
 });
 
-// specialty widened with '' so the form starts unpicked; resolver rejects '' on submit.
-type DoctorFormValues = Omit<z.infer<typeof doctorSchema>, 'specialty'> & {
-  specialty: z.infer<typeof doctorSchema>['specialty'] | '';
-};
+// Input keeps '' (unpicked Select); output has it narrowed away by the refine.
+type DoctorFormValues = z.input<typeof doctorSchema>;
+type DoctorFormOutput = z.output<typeof doctorSchema>;
 
 // "Dr. Maria Santos" -> { firstName: 'Maria', lastName: 'Santos' }.
 function splitName(name: string): { firstName: string; lastName: string } {
@@ -126,12 +131,12 @@ function DoctorForm({
     handleSubmit,
     control,
     formState: { errors, isSubmitting },
-  } = useForm<DoctorFormValues>({
-    resolver: zodResolver(doctorSchema) as never,
+  } = useForm<DoctorFormValues, unknown, DoctorFormOutput>({
+    resolver: zodResolver(doctorSchema),
     defaultValues: valuesFor(editDoctor),
   });
 
-  const onSubmit = (values: DoctorFormValues) => {
+  const onSubmit = (values: DoctorFormOutput) => {
     const name = `Dr. ${values.firstName} ${values.lastName}`.trim();
 
     if (isEdit && editDoctor) {

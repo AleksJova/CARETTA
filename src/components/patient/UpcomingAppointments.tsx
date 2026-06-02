@@ -16,6 +16,7 @@ export function UpcomingAppointments() {
   const patientId = usePatientId();
   const [pendingCancel, setPendingCancel] = useState<Appointment | null>(null);
 
+  // See *Render control: time-based list freshness* in DESIGN.md.
   const upcoming = useMemo(
     () =>
       patientId

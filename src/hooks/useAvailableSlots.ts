@@ -31,6 +31,7 @@ export function useAvailableSlots(
 
   const { specialty, doctorId, date } = filters;
 
+  // See *Render control: time-based list freshness* in DESIGN.md.
   return useMemo(() => {
     if (date && date < today) {
       return [];
