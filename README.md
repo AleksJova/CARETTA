@@ -1,6 +1,11 @@
-# Caretta
+<h1>
+  <img src="src/assets/carettaLogo.svg" alt="" width="40" valign="middle" />
+  Caretta
+</h1>
 
 Appointment management prototype for a medical center.
+
+**Live demo:** [caretta-iota.vercel.app](https://caretta-iota.vercel.app/)
 
 ## Overview
 
