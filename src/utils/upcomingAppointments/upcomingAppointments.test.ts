@@ -3,8 +3,7 @@ import { upcomingAppointments } from './upcomingAppointments';
 import type { Appointment } from '@/types';
 
 const TODAY = '2026-06-01';
-// Early in the day, so every "today" appointment still counts as upcoming
-// unless a test overrides it.
+
 const NOW = '00:00';
 
 function appt(overrides: Partial<Appointment> = {}): Appointment {
@@ -61,7 +60,7 @@ describe('upcomingAppointments', () => {
       appt({ id: 'earlier', date: TODAY, startTime: '09:00' }),
       appt({ id: 'later', date: TODAY, startTime: '15:00' }),
     ];
-    // At 13:00 the 09:00 slot is past; the 15:00 slot is still upcoming.
+
     expect(
       upcomingAppointments(list, 'pat-demo', TODAY, '13:00').map((a) => a.id)
     ).toEqual(['later']);

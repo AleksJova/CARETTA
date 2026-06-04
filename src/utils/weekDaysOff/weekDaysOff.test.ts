@@ -13,8 +13,7 @@ function doctor(id: string, daysOff: string[], name = id): Doctor {
   };
 }
 
-// Anchor inside the week of Mon 2026-05-25 .. Sat 2026-05-30.
-const ANCHOR = '2026-05-27'; // a Wednesday
+const ANCHOR = '2026-05-27';
 
 describe('weekDaysOffList', () => {
   it('lists this-week entries with doctor name and date, soonest first', () => {

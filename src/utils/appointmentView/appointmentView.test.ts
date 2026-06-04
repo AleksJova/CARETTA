@@ -5,7 +5,6 @@ const TODAY = '2026-06-01';
 
 describe('deriveAppointmentView', () => {
   it('a completed appointment is always "completed"', () => {
-    // Even if its slot is in the future, the stored status wins.
     expect(
       deriveAppointmentView(
         'completed',
