@@ -86,6 +86,7 @@ export default function PatientSelect() {
                   placeholder="Jane Doe"
                   {...register('name')}
                   aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? 'name-error' : undefined}
                 />
               </Field>
               <Field
@@ -100,6 +101,7 @@ export default function PatientSelect() {
                   placeholder="jane@example.com"
                   {...register('email')}
                   aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
                 />
               </Field>
               <Field
@@ -113,6 +115,7 @@ export default function PatientSelect() {
                   placeholder="+1 (555) 0100"
                   {...register('phone')}
                   aria-invalid={!!errors.phone}
+                  aria-describedby={errors.phone ? 'phone-error' : undefined}
                 />
               </Field>
 
@@ -209,7 +212,11 @@ function Field({
       </Label>
       {children}
       {error && (
-        <p role="alert" className="text-xs text-cancelled">
+        <p
+          id={`${htmlFor}-error`}
+          role="alert"
+          className="text-xs text-cancelled"
+        >
           {error}
         </p>
       )}

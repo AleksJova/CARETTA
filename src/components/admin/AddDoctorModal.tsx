@@ -197,6 +197,9 @@ function DoctorForm({
               className="form-input"
               {...register('firstName')}
               aria-invalid={!!errors.firstName}
+              aria-describedby={
+                errors.firstName ? 'firstName-error' : undefined
+              }
             />
           </Field>
           <Field
@@ -209,6 +212,7 @@ function DoctorForm({
               className="form-input"
               {...register('lastName')}
               aria-invalid={!!errors.lastName}
+              aria-describedby={errors.lastName ? 'lastName-error' : undefined}
             />
           </Field>
         </div>
@@ -233,6 +237,9 @@ function DoctorForm({
                     <SelectTrigger
                       id="specialty"
                       aria-invalid={!!errors.specialty}
+                      aria-describedby={
+                        errors.specialty ? 'specialty-error' : undefined
+                      }
                     >
                       <SelectValue placeholder="Select a specialty" />
                     </SelectTrigger>
@@ -245,7 +252,11 @@ function DoctorForm({
                     </SelectContent>
                   </Select>
                   {errors.specialty && (
-                    <p role="alert" className="text-xs text-cancelled">
+                    <p
+                      id="specialty-error"
+                      role="alert"
+                      className="text-xs text-cancelled"
+                    >
                       {errors.specialty.message}
                     </p>
                   )}
@@ -294,7 +305,11 @@ function DoctorForm({
               control={control}
               name="workingDays"
               render={({ field }) => (
-                <fieldset>
+                <fieldset
+                  aria-describedby={
+                    errors.workingDays ? 'workingDays-error' : undefined
+                  }
+                >
                   <legend className="mb-1.5 text-xs text-muted-foreground">
                     Working days
                   </legend>
@@ -326,7 +341,11 @@ function DoctorForm({
                     })}
                   </div>
                   {errors.workingDays && (
-                    <p role="alert" className="mt-1.5 text-xs text-cancelled">
+                    <p
+                      id="workingDays-error"
+                      role="alert"
+                      className="mt-1.5 text-xs text-cancelled"
+                    >
                       {errors.workingDays.message}
                     </p>
                   )}
@@ -372,7 +391,11 @@ function Field({
       </Label>
       {children}
       {error && (
-        <p role="alert" className="text-xs text-cancelled">
+        <p
+          id={`${htmlFor}-error`}
+          role="alert"
+          className="text-xs text-cancelled"
+        >
           {error}
         </p>
       )}
