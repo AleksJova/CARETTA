@@ -39,6 +39,14 @@ In an emergency case, the system would detect all affected appointments and gene
 
 Once the patient selects an option, the appointment is moved and the unused holds are released. If the patient does not respond in time, the system could either assign the closest available slot automatically or move the case into an admin follow-up queue, depending on clinic policy. To make last-minute cancellations fairer, patients affected by emergency doctor cancellations could also receive reward points that can be used for something meaningful, such as priority booking, a discount, or an additional clinic service.
 
+## Data layer and persistence
+
+All data (doctors, patients, appointments, user session, search filters) is persisted through swappable service interfaces rather than hardcoded to localStorage, so the entire data layer can be replaced without touching components or stores.
+
+**Domain data** (doctors, patients, appointments) lives in `localStorage` with namespaced keys (`caretta:doctors`, `caretta:patients`, `caretta:appointments`). The `medicalStore` reads this data on startup and on every mutation (add, update, remove) immediately calls `dataService.save*()` to persist. This keeps the store and localStorage in sync at all times, so a page refresh restores all domain state. **Session data** (the chosen role and the selected patient ID) also lives in localStorage (`caretta:role`, `caretta:patientId`) and is read on startup to restore the user's session.
+
+**Patient-local filter state** (the slot search bar: specialty, doctor, date, and whether filters have been applied) lives in `sessionStorage` (`caretta:patient:slotSearch`) via the `slotSearchService`. Using sessionStorage instead of localStorage means search filters are cleared when the tab closes, which prevents stale UI (a tab left open overnight should not show yesterday's date). The filters are persisted as two snapshots: a `draft` that the user edits as they type, and an `applied` set that derivation reads only when they hit "Search". See **Performance and render control** below for how this two-snapshot pattern prevents expensive slot recalculations. On logout or role change, `slotSearchService.clear()` is called to clean up. The service abstraction means swapping sessionStorage for a backend endpoint or a different storage medium is localized to the `slotSearchService` module. The feature code in `PatientLayout` and `SlotFilters` doesn't import storage directly.
+
 ## Performance and render control
 
 The implementation controls rendering deliberately rather than by accident. Slot generation runs inside a `useMemo` keyed on its real inputs, so it does not recalculate on unrelated renders. The patient filter bar keeps two snapshots, a `draft` that the user edits and an `applied` set that derivation reads, and the search only commits the draft to applied on submit, so typing in the filters never triggers the expensive recompute. Store reads go through selector hooks so unrelated views do not re-render across the patient and admin boundary, and list rows are memoized with stable action callbacks so a change to one row does not re-render the list.
@@ -47,9 +55,15 @@ There is one deliberate staleness trade-off. The upcoming-appointments list and 
 
 ## Security and access control
 
+### Mock authentication
+
+The prototype uses hardcoded mock authentication: there are no passwords. On the login screen, users select a role (admin or patient). Patients then register or select from existing patients. To make it easy to explore without registration, the **Seed data** toggle prepopulates two mocked patient profiles (Lucía Fernández and Grace Whitfield) along with sample doctors and appointments, so users can immediately book as an existing patient. Without seeding, a fresh start requires registering a new patient first.
+
+The role is stored in localStorage and is used only to decide which view to render, so it is not a security boundary (see Role enforcement below). In production, I'd replace this with a real auth system: **OAuth 2.0** with an external provider, **session-based auth** with a backend server, or **JWT** issued by the backend. All require the same server-side change: every query and mutation must validate the caller's role against what data the request is allowed to access.
+
 ### Role enforcement
 
-The role chosen at login is stored on the client and is used only to decide which view to render. `RequireRole` stops a patient from reaching the admin view and an admin from reaching the patient view, and logout clears the role and returns to login. This is a user-experience affordance, not a security boundary, because anyone can edit local storage or call the data layer directly. In production the role must be checked on the server on every request against an authenticated session, and every query must be scoped to the data that role is allowed to see, so the answer is the same no matter what the client renders.
+`RequireRole` acts as a client-side UX guard: it stops a patient from reaching the admin view and an admin from reaching the patient view by redirecting to the login screen. This is not a security boundary — anyone can edit localStorage to change their role or navigate directly to the API. In production the role must be checked on the server on every request, with every query scoped to the data that role is allowed to see.
 
 ### Input validation
 
