@@ -45,8 +45,13 @@ export default function Header({
               {roleLabel}
             </span>
           </div>
-          <Button variant="outline" size="sm" onClick={logout}>
-            <LogOut />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={logout}
+            aria-label="Log out"
+          >
+            <LogOut aria-hidden="true" />
             <span className="hidden sm:inline">Log out</span>
           </Button>
         </div>
