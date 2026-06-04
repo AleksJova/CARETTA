@@ -167,7 +167,7 @@ export default function AppointmentsPage() {
         </span>
       </div>
 
-      <div className="mb-4 flex flex-wrap items-end gap-3 rounded-lg border border-border bg-white p-4">
+      <div className="mb-4 flex flex-wrap items-end gap-3 rounded-lg border border-border bg-card p-4">
         <div className="space-y-1.5">
           <Label
             htmlFor="appt-doctor"
@@ -243,7 +243,7 @@ export default function AppointmentsPage() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-border bg-white">
+      <div className="overflow-hidden rounded-lg border border-border bg-card">
         {rows.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <CalendarX

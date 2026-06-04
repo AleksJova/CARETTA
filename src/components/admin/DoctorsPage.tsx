@@ -42,13 +42,13 @@ export default function DoctorsPage() {
       </div>
 
       <div className="mb-5 grid gap-3 sm:grid-cols-[auto_1fr]">
-        <div className="rounded-lg bg-white p-4 sm:min-w-36">
+        <div className="rounded-lg bg-card p-4 sm:min-w-36">
           <p className="text-xs text-muted-foreground">Total doctors</p>
           <p className="mt-1 text-2xl font-medium text-foreground">
             {doctors.length}
           </p>
         </div>
-        <div className="rounded-lg bg-white p-4">
+        <div className="rounded-lg bg-card p-4">
           <p className="text-xs text-muted-foreground">
             Days off this week ({daysOff.length})
           </p>
@@ -71,7 +71,7 @@ export default function DoctorsPage() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-border bg-white">
+      <div className="overflow-hidden rounded-lg border border-border bg-card">
         {doctors.length === 0 ? (
           <div className="px-6 py-12 text-center">
             <p className="text-sm font-medium text-foreground">

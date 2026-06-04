@@ -15,7 +15,7 @@ export default function Header({
   const role = useAuthStore((s) => s.role);
 
   return (
-    <header className="border-b border-border bg-white">
+    <header className="border-b border-border bg-card">
       <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4 sm:px-6">
         <div className="flex items-center gap-2.5">
           <Logo size="sm" />

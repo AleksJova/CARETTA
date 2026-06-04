@@ -57,7 +57,7 @@ function ToastCard({
 }) {
   return (
     <div
-      className={`flex w-[var(--width)] items-start gap-3 rounded-lg border border-l-4 ${ACCENT_BORDER[accent]} bg-white px-4 py-3 shadow-md`}
+      className={`flex w-[var(--width)] items-start gap-3 rounded-lg border border-l-4 ${ACCENT_BORDER[accent]} bg-card px-4 py-3 shadow-md`}
     >
       <span className="mt-0.5 shrink-0" aria-hidden="true">
         {icon}

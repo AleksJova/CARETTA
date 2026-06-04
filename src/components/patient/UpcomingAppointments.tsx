@@ -47,7 +47,7 @@ export function UpcomingAppointments() {
       </h2>
 
       {upcoming.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-white px-6 py-10 text-center">
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-card px-6 py-10 text-center">
           <CalendarCheck
             className="size-6 text-muted-foreground"
             aria-hidden="true"
@@ -60,7 +60,7 @@ export function UpcomingAppointments() {
           </p>
         </div>
       ) : (
-        <div className="divide-y divide-border overflow-hidden rounded-lg border border-border bg-white">
+        <div className="divide-y divide-border overflow-hidden rounded-lg border border-border bg-card">
           {upcoming.map((appointment) => (
             <AppointmentRow
               key={appointment.id}

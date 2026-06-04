@@ -84,7 +84,7 @@ export function SlotFilters({
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-4 grid grid-cols-1 items-end gap-3 rounded-lg border border-border bg-white p-4 sm:grid-cols-[repeat(3,minmax(0,1fr))_auto]"
+      className="mb-4 grid grid-cols-1 items-end gap-3 rounded-lg border border-border bg-card p-4 sm:grid-cols-[repeat(3,minmax(0,1fr))_auto]"
     >
       <div className="space-y-1.5">
         <Label
