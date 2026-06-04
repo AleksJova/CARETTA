@@ -6,7 +6,7 @@ import {
   renderPatientView,
   setupClinic,
   teardownClinic,
-} from './flows/fixtures';
+} from './helpers';
 import { useMedicalStore } from '@/stores/medicalStore/medicalStore';
 
 async function searchWednesday(

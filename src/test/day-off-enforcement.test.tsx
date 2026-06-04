@@ -9,7 +9,7 @@ import {
   renderPatientView,
   setupClinic,
   teardownClinic,
-} from './flows/fixtures';
+} from './helpers';
 import { useMedicalStore } from '@/stores/medicalStore/medicalStore';
 
 function bookButtons(): HTMLElement[] {

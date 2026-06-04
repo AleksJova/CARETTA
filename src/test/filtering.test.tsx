@@ -7,7 +7,7 @@ import {
   renderPatientView,
   setupClinic,
   teardownClinic,
-} from './flows/fixtures';
+} from './helpers';
 
 function bookLabels(): string[] {
   return screen

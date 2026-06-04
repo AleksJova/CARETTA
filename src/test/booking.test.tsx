@@ -6,7 +6,7 @@ import {
   renderPatientView,
   setupClinic,
   teardownClinic,
-} from './flows/fixtures';
+} from './helpers';
 import { useMedicalStore } from '@/stores/medicalStore/medicalStore';
 
 // Picks Wednesday and runs the search so the day's slot cards are on screen.

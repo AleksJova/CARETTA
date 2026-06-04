@@ -7,7 +7,7 @@ import {
   renderPatientView,
   setupClinic,
   teardownClinic,
-} from './flows/fixtures';
+} from './helpers';
 import type { Doctor } from '@/types';
 
 // Reads every visible slot card's "Book ..." label so we can assert on the
