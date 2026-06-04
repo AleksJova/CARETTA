@@ -141,7 +141,7 @@ export default function PatientSelect() {
                     <button
                       type="button"
                       onClick={() => selectPatient(p.id)}
-                      className="flex w-full items-center gap-3 rounded-lg border border-border bg-white px-3 py-2.5 text-left transition-colors hover:bg-muted"
+                      className="flex w-full items-center gap-3 rounded-lg border border-border bg-card px-3 py-2.5 text-left transition-colors hover:bg-muted"
                     >
                       <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-accent-teal text-accent-teal-foreground">
                         <User className="size-4" aria-hidden="true" />

@@ -28,14 +28,14 @@ function weekdayISO(days: number): string {
   return monday.toISOString().slice(0, 10);
 }
 
-export const SEED_PATIENTS: Patient[] = data.patients;
+const SEED_PATIENTS: Patient[] = data.patients;
 
-export const SEED_DOCTORS: Doctor[] = data.doctors.map((d) => ({
+const SEED_DOCTORS: Doctor[] = data.doctors.map((d) => ({
   ...d,
   daysOff: d.daysOff.map((o) => weekdayISO(o.dayOffset)),
 }));
 
-export function buildSeedAppointments(): Appointment[] {
+function buildSeedAppointments(): Appointment[] {
   return data.appointments.map(({ dayOffset, ...rest }) => ({
     ...rest,
     date: weekdayISO(dayOffset),

@@ -88,7 +88,7 @@ export function AvailableSlots() {
       />
 
       {!hasSearched ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-white px-6 py-12 text-center">
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-card px-6 py-12 text-center">
           <Search className="size-6 text-muted-foreground" aria-hidden="true" />
           <p className="mt-3 text-sm font-medium text-foreground">
             Search for available slots
@@ -98,7 +98,7 @@ export function AvailableSlots() {
           </p>
         </div>
       ) : slots.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-white px-6 py-12 text-center">
+        <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border bg-card px-6 py-12 text-center">
           <CalendarX
             className="size-6 text-muted-foreground"
             aria-hidden="true"

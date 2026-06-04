@@ -50,8 +50,6 @@ describe('availableSlots', () => {
   });
 
   it('removing the appointment (cancel) restores the slot', () => {
-    // Cancelling deletes the appointment, so its slot is available again — the
-    // same as having no appointment at all.
     const restored = availableSlots([patel], [], MONDAY, { date: MONDAY });
 
     expect(restored).toHaveLength(5);
@@ -102,8 +100,6 @@ describe('availableSlots', () => {
   });
 
   it('honours a day off even when an appointment exists that date', () => {
-    // Edge case: doctor took the day off but already had a booking that date.
-    // The day off wins — zero slots — and the stray booking does not resurrect any.
     const offDoctor: Doctor = { ...patel, daysOff: [MONDAY] };
     const slots = availableSlots([offDoctor], [booking()], MONDAY, {
       date: MONDAY,

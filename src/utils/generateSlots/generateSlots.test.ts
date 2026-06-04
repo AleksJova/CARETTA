@@ -48,7 +48,6 @@ describe('generateSlots', () => {
     const slots = generateSlots(morningDoctor, MONDAY);
     const dates = [...new Set(slots.map((s) => s.date))].sort();
 
-    // Mon 06-01 … Sat 06-06, with no 06-07 (Sunday).
     expect(dates).toEqual([
       '2026-06-01',
       '2026-06-02',
@@ -57,7 +56,7 @@ describe('generateSlots', () => {
       '2026-06-05',
       '2026-06-06',
     ]);
-    expect(slots).toHaveLength(6 * 5); // six working days × five morning slots
+    expect(slots).toHaveLength(6 * 5);
   });
 
   it('emits no slots on days the doctor does not work', () => {
@@ -75,12 +74,12 @@ describe('generateSlots', () => {
   it('emits zero slots on a day off', () => {
     const withDayOff: Doctor = {
       ...morningDoctor,
-      daysOff: ['2026-06-03'], // Wednesday
+      daysOff: ['2026-06-03'],
     };
     const slots = generateSlots(withDayOff, MONDAY);
 
     expect(slots.some((s) => s.date === '2026-06-03')).toBe(false);
-    // The surrounding days are unaffected.
+
     expect(slots.some((s) => s.date === '2026-06-02')).toBe(true);
     expect(slots.some((s) => s.date === '2026-06-04')).toBe(true);
   });

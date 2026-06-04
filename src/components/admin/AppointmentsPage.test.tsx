@@ -23,9 +23,6 @@ const PATIENT: Patient = {
   phone: '+1 (555) 0111',
 };
 
-// Appointments are dated today (so they fall within the default whole-week
-// view) at a slot that has already ended — 00:00–00:01 — so a confirmed one
-// deterministically reads as "Awaiting completion" regardless of the wall clock.
 function appointment(id: string, status: Appointment['status']): Appointment {
   return {
     id,
@@ -47,7 +44,6 @@ function renderPage() {
 }
 
 beforeEach(() => {
-  // Persisted filters would otherwise bleed across tests.
   sessionStorage.clear();
   useMedicalStore.setState({
     doctors: [DOCTOR],
@@ -73,7 +69,7 @@ describe('AppointmentsPage', () => {
     const row = screen.getByText('Ana Rivera').closest('tr')!;
     expect(within(row).getByText('Dr. Emily Carter')).toBeInTheDocument();
     expect(within(row).getByText('Cardiology')).toBeInTheDocument();
-    // A past, still-confirmed appointment reads as "Awaiting completion".
+
     expect(within(row).getByText('Awaiting completion')).toBeInTheDocument();
   });
 
@@ -86,7 +82,6 @@ describe('AppointmentsPage', () => {
     });
     renderPage();
 
-    // Exactly one Complete button — for the single awaiting row.
     expect(screen.getAllByRole('button', { name: /complete/i })).toHaveLength(
       1
     );
@@ -102,7 +97,7 @@ describe('AppointmentsPage', () => {
     await user.click(screen.getByRole('button', { name: /complete/i }));
 
     expect(useMedicalStore.getState().appointments[0].status).toBe('completed');
-    // The action disappears once the row is terminal.
+
     expect(
       screen.queryByRole('button', { name: /complete/i })
     ).not.toBeInTheDocument();

@@ -2,11 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { validateBooking } from './validateBooking';
 import type { Appointment, BookingRequest, Doctor } from '@/types';
 
-// Fixed "now" so the past-slot guard is deterministic: start of the request
-// day, so on-day slots are never treated as past unless a test says otherwise.
 const NOW = { today: '2026-06-01', time: '00:00' };
 
-// Thin wrapper that pins `now` for every assertion in this suite.
 const vb = (
   request: BookingRequest,
   doctors: Doctor[],
@@ -70,7 +67,6 @@ describe('validateBooking', () => {
   });
 
   it('rejects a slot outside the doctor shift window', () => {
-    // Morning shift is 08–13; a 13:00–14:00 slot belongs to the afternoon.
     expect(
       vb({ ...baseRequest, startTime: '13:00', endTime: '14:00' }, [doctor], [])
     ).toEqual({ ok: false, reason: 'This is not a valid consultation slot.' });
@@ -94,7 +90,6 @@ describe('validateBooking', () => {
   });
 
   it('rejects a confirmed-slot conflict only after the slot is on-grid', () => {
-    // An off-grid overlapping request is rejected for being off-grid, not as a conflict.
     expect(
       vb(
         { ...baseRequest, startTime: '09:30', endTime: '10:30' },
@@ -105,7 +100,6 @@ describe('validateBooking', () => {
   });
 
   it('rejects when the requested date falls on a non-working weekday', () => {
-    // 2026-06-06 is a Saturday; this doctor works Mon–Fri only.
     expect(vb({ ...baseRequest, date: '2026-06-06' }, [doctor], [])).toEqual({
       ok: false,
       reason: 'Doctor does not work on this day.',
@@ -113,7 +107,6 @@ describe('validateBooking', () => {
   });
 
   it('rejects a Sunday booking (clinic is closed Sundays)', () => {
-    // 2026-06-07 is a Sunday; Weekday has no Sunday so it can never be a working day.
     expect(vb({ ...baseRequest, date: '2026-06-07' }, [doctor], [])).toEqual({
       ok: false,
       reason: 'Doctor does not work on this day.',
@@ -175,7 +168,6 @@ describe('validateBooking', () => {
   });
 
   it('rejects a slot whose start time has already passed today', () => {
-    // baseRequest is today (2026-06-01) at 09:00; "now" is 10:00.
     expect(
       validateBooking(baseRequest, [doctor], [], {
         today: '2026-06-01',

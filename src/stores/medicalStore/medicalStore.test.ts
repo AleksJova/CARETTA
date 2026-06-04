@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 
 import { useMedicalStore, useDoctors, useAppointments } from './medicalStore';
@@ -29,7 +29,13 @@ const BASE_INPUT = {
 };
 
 beforeEach(() => {
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(2026, 5, 1, 6, 0, 0));
   useMedicalStore.setState({ doctors: [], patients: [], appointments: [] });
+});
+
+afterEach(() => {
+  vi.useRealTimers();
 });
 
 describe('Store shape — exposes expected state slices and action methods', () => {
@@ -138,7 +144,7 @@ describe('Immutable state updates — mutations produce new object references', 
     });
     const after = useMedicalStore.getState().appointments;
     expect(after).not.toBe(before);
-    // Cancelling deletes the appointment, freeing its slot.
+
     expect(after).toHaveLength(0);
   });
 });
@@ -198,7 +204,6 @@ describe('Doctor actions — adding, updating, and managing days off', () => {
   });
 
   it('setDoctorDayOff refuses a day the doctor does not work', () => {
-    // DOCTOR works Mon–Fri; 2026-06-06 is a Saturday.
     useMedicalStore.setState({ doctors: [DOCTOR] });
     let ok = true;
     act(() => {

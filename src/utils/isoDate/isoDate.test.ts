@@ -12,8 +12,8 @@ import {
 
 describe('isSunday', () => {
   it('detects Sundays in UTC', () => {
-    expect(isSunday(isoToDate('2026-06-07')!)).toBe(true); // Sunday
-    expect(isSunday(isoToDate('2026-06-08')!)).toBe(false); // Monday
+    expect(isSunday(isoToDate('2026-06-07')!)).toBe(true);
+    expect(isSunday(isoToDate('2026-06-08')!)).toBe(false);
   });
 });
 
@@ -27,11 +27,10 @@ describe('isoToDate / dateToISO round-trip', () => {
   });
 
   it('rejects impossible calendar days instead of normalizing them', () => {
-    // new Date() would overflow these into a valid later day; we reject them.
-    expect(isoToDate('2026-02-30')).toBeNull(); // -> Mar 2 without the guard
-    expect(isoToDate('2026-04-31')).toBeNull(); // -> May 1 without the guard
-    expect(isoToDate('2026-13-01')).toBeNull(); // month overflow
-    expect(isoToDate('2026-00-10')).toBeNull(); // month underflow
+    expect(isoToDate('2026-02-30')).toBeNull();
+    expect(isoToDate('2026-04-31')).toBeNull();
+    expect(isoToDate('2026-13-01')).toBeNull();
+    expect(isoToDate('2026-00-10')).toBeNull();
   });
 
   it('rejects non-padded or wrong-shaped dates', () => {
@@ -42,8 +41,6 @@ describe('isoToDate / dateToISO round-trip', () => {
 
 describe('local-time bridge', () => {
   it('round-trips an ISO date through local midnight without drifting', () => {
-    // The whole point: a local Date built from an ISO day, formatted back via
-    // the local formatter, must return the same calendar day in any timezone.
     expect(localDateToISO(isoToLocalDate('2026-06-02')!)).toBe('2026-06-02');
     expect(localDateToISO(isoToLocalDate('2026-12-31')!)).toBe('2026-12-31');
   });
@@ -51,7 +48,7 @@ describe('local-time bridge', () => {
   it('builds a local-midnight Date on the right calendar day', () => {
     const date = isoToLocalDate('2026-06-02')!;
     expect(date.getFullYear()).toBe(2026);
-    expect(date.getMonth()).toBe(5); // June (0-indexed)
+    expect(date.getMonth()).toBe(5);
     expect(date.getDate()).toBe(2);
   });
 
@@ -60,10 +57,8 @@ describe('local-time bridge', () => {
   });
 
   it('returns null for overflow days instead of normalizing them', () => {
-    // new Date() would roll these into a valid later day; we reject them so the
-    // local parser matches isoToDate's ISO-boundary behavior.
-    expect(isoToLocalDate('2026-02-30')).toBeNull(); // -> Mar 2 without the guard
-    expect(isoToLocalDate('2026-13-01')).toBeNull(); // month overflow
+    expect(isoToLocalDate('2026-02-30')).toBeNull();
+    expect(isoToLocalDate('2026-13-01')).toBeNull();
   });
 });
 
@@ -98,8 +93,8 @@ describe('isSlotInPast', () => {
   });
 
   it('on today, a slot is past once its start time is at or before now', () => {
-    expect(isSlotInPast(TODAY, '08:00', TODAY, '13:00')).toBe(true); // earlier
-    expect(isSlotInPast(TODAY, '13:00', TODAY, '13:00')).toBe(true); // running hour
-    expect(isSlotInPast(TODAY, '14:00', TODAY, '13:00')).toBe(false); // later
+    expect(isSlotInPast(TODAY, '08:00', TODAY, '13:00')).toBe(true);
+    expect(isSlotInPast(TODAY, '13:00', TODAY, '13:00')).toBe(true);
+    expect(isSlotInPast(TODAY, '14:00', TODAY, '13:00')).toBe(false);
   });
 });

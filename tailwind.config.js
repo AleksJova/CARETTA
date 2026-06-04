@@ -69,7 +69,6 @@ export default {
           DEFAULT: 'hsl(var(--popover))',
           foreground: 'hsl(var(--popover-foreground))',
         },
-        confirmed: 'hsl(var(--status-confirmed))',
         completed: 'hsl(var(--status-completed))',
         cancelled: 'hsl(var(--status-cancelled))',
         pending: 'hsl(var(--status-pending))',

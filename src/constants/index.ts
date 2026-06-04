@@ -15,8 +15,6 @@ export const SPECIALTIES = [
   'Pulmonology',
 ] as const;
 
-export type Specialty = (typeof SPECIALTIES)[number];
-
 // Clinic working days, Mon–Sat (no Sunday). Order matters: used for the
 // working-days picker and for compact range rendering.
 export const WEEKDAYS: readonly Weekday[] = [

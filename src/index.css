@@ -16,7 +16,7 @@
  *   text-muted-foreground -> --muted-foreground (secondary text)
  *   border-border        -> --border           (0.5px-style hairlines)
  *   ring-ring            -> --ring             (focus rings)
- *   bg-confirmed / text-completed / bg-cancelled / text-pending
+ *   text-completed / bg-cancelled / text-pending
  *                        -> appointment status tokens
  *   rounded-lg           -> --radius (8px)
  */
@@ -59,7 +59,6 @@
     --ring: 173 80% 26%;
 
     /* Status tokens */
-    --status-confirmed: 173 70% 35%;
     --status-completed: 142 71% 38%;
     --status-cancelled: 0 72% 51%;
     --status-pending: 38 92% 50%;
@@ -85,7 +84,7 @@
   /* Shared text-input style for hand-written form fields (the modals), matching
      the shadcn control look: hairline border, 8px radius, teal focus ring. */
   .form-input {
-    @apply h-9 w-full rounded-lg border border-input bg-white px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring;
+    @apply h-9 w-full rounded-lg border border-input bg-card px-3 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring;
   }
 }
 

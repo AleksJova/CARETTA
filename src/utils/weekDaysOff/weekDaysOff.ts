@@ -40,8 +40,3 @@ export function weekDaysOffList(
       a.date.localeCompare(b.date) || a.doctorName.localeCompare(b.doctorName)
   );
 }
-
-// Count of day-off entries in the clinic week containing `anchorISO`.
-export function weekDaysOff(doctors: Doctor[], anchorISO: string): number {
-  return weekDaysOffList(doctors, anchorISO).length;
-}

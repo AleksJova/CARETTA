@@ -26,9 +26,8 @@ describe('formatTimeRange', () => {
   });
 
   it('shows the period on both ends when they differ', () => {
-    // 11:00 is AM, 12:00 is PM — crossing noon, so each end carries its period.
     expect(formatTimeRange('11:00', '12:00')).toBe('11:00 AM – 12:00 PM');
-    // 12:00 and 13:00 are both PM, so the period collapses to one at the end.
+
     expect(formatTimeRange('12:00', '13:00')).toBe('12:00 – 1:00 PM');
   });
 });

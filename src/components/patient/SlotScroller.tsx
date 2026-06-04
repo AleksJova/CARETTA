@@ -68,7 +68,7 @@ export function SlotScroller({
         onClick={() => scrollByPage(-1)}
         disabled={atStart}
         aria-label="Scroll to earlier slots"
-        className="absolute -left-3 top-1/2 z-20 hidden size-8 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white text-foreground shadow-sm transition-opacity hover:bg-surface-muted disabled:pointer-events-none disabled:opacity-0 sm:flex"
+        className="absolute -left-3 top-1/2 z-20 hidden size-8 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm transition-opacity hover:bg-surface-muted disabled:pointer-events-none disabled:opacity-0 sm:flex"
       >
         <ChevronLeft className="size-4" aria-hidden="true" />
       </button>
@@ -77,7 +77,7 @@ export function SlotScroller({
         onClick={() => scrollByPage(1)}
         disabled={atEnd}
         aria-label="Scroll to later slots"
-        className="absolute -right-3 top-1/2 z-20 hidden size-8 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-white text-foreground shadow-sm transition-opacity hover:bg-surface-muted disabled:pointer-events-none disabled:opacity-0 sm:flex"
+        className="absolute -right-3 top-1/2 z-20 hidden size-8 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-sm transition-opacity hover:bg-surface-muted disabled:pointer-events-none disabled:opacity-0 sm:flex"
       >
         <ChevronRight className="size-4" aria-hidden="true" />
       </button>
